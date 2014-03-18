@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="DFØ Portal" versionCode="1.0" version="1.0">
-<name>DFØ Portal</name>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
 <author href="" email=""></author>
 <gap:platform name="android" />
 <gap:platform name="ios" />
-<preference name="orientation" value="default" />
-<preference name="target-device" value="universal" />
 <preference name="phonegap-version" value="3.1.0" />
-<preference name="fullscreen" value="false" />
-<preference name="ios-statusbarstyle" value="default" />
-<preference name="android-installLocation" value="internalOnly" />
-<feature name="http://api.phonegap.com/1.0/network"/>
-<gap:plugin name="org.apache.cordova.camera" />
+<preference name="permissions" value="none"/>
 <access origin="*" subdomains="true"/>
 </widget>
