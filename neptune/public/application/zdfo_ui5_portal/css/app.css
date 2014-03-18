@@ -1,0 +1,27 @@
+.sapMBusyIndicator {
+margin-left: 10px;
+vertical-align: top;
+}
+
+.sapMILILabel {
+font-size: 15px;
+}
+
+.sapMObjLAttrRow {
+padding-top: 0;
+}
+
+.sapMeCalendar .sapMeCalendarMonth {
+width: 100%;
+}
+
+canvas.sapMSpinCanvas {
+margin-top: 9px;
+margin-left: 10px;
+}
+
+
+.sapMLIBSelected, .sapMLIBSelected>td, .sapMLIBSelected+.sapMListTblSubRow { background-color: rgba(255, 255, 255, 0.8); }
+
+
+

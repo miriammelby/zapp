@@ -6,103 +6,3188 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>DFØ Portal</title>
-<link rel="stylesheet" type="text/css" href="neptune/server/jqm/1.3/jquery.mobile-1.3.2.min.css" />
-<script type="text/javascript" src="neptune/server/jquery/js/jquery-1.8.3.min.js"></script>
-<script type="text/javascript" src="neptune/server/jqm/1.3/jquery.mobile-1.3.2.min.js"></script>
-<link rel="stylesheet" type="text/css" href="neptune/server/wijmo/css/jquery.wijmo-pro.all.3.20131.3.min.css" />
-<script type="text/javascript" src="neptune/server/wijmo/js/jquery.wijmo-open.all.3.20131.3.min.js"></script>
-<script type="text/javascript" src="neptune/server/wijmo/js/jquery.wijmo-pro.all.3.20131.3.min.js"></script>
-<link rel="stylesheet" type="text/css" href="neptune/server/jquery/css/jquery-mobile-fluid960.min.css" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-touch-fullscreen" content="yes" />
+<script id="sap-ui-bootstrap" type="text/javascript" src="neptune/server/openui5/resources/sap-ui-core.js?v=1.16.7"
+data-sap-ui-preload="sync"
+data-sap-ui-theme="sap_bluecrystal"
+data-sap-ui-libs="sap.ui.layout,sap.m,sap.me,sap.viz"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyClGtQTLN9rj__p_2S-HTZ9fAcjC3a22w8&sensor=true"></script>
 
-<link rel="stylesheet" href="neptune/public/application/zdfo_timesheet_entry/css/dfo.css" />
+<script>
 
-<script type="text/javascript" src="neptune/public/application/zfwf_app_noportal/js/camera.js" ></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script>
+//Phonegap
+var pictureSource;
+var destinationType;
 
-<link rel="shortcut icon" type="image/x-icon" href="/neptune/public/application/zdfo_my_timesheet/images/favicon.ico" />
+document.addEventListener("deviceready", onDeviceReady, false);
 
-<script src="neptune/public/application/zdfo_timesheet_entry/js/globalize.culture.nb-no.js" type="text/javascript"></script>
+function onDeviceReady()
+{
 
-<style type="text/css">
+    document.addEventListener("backbutton", onBackButton, false);
 
-.ui-page {
-	background: -moz-linear-gradient(top, #d0d0d0 0%, #ffffff 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #d0d0d0), color-stop(100%, #ffffff)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #d0d0d0 0%, #ffffff 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #d0d0d0 0%, #ffffff 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #d0d0d0 0%, #ffffff 100%); /* IE10+ */
-	background: linear-gradient(top, #d0d0d0 0%, #ffffff 100%); /* W3C */
-}
-.ui-mobile-viewport-transitioning, .ui-mobile-viewport-transitioning .ui-page {
-	overflow: visible;
+    pictureSource=navigator.camera.PictureSourceType;
+    destinationType=navigator.camera.DestinationType;
 }
 
-</style>
+function onBackButton()
+{
 
-<script type="text/javascript" charset="utf-8">
+    var curPage =  App.getCurrentPage();
 
-$( document ).bind( "mobileinit", function() {
-    // Make your jQuery Mobile framework configuration changes here!
-    $.mobile.allowCrossDomainPages = true;
-    $.support.cors = true;
-    $.mobile.pushStateEnabled = false;
-});
+    if (curPage.sId == 'Menu')
+    {
+        diaExit.open();
+    }
+    else
+    {
+        App.back();
+    }
+
+}
+
+function onPhotoDataSuccess(imageData)
+{
+    var imageSrc = "data:image/jpeg;base64," + imageData;
+    itemImage.setIcon(imageSrc);
+    itemImage.setVisible(true);
+    cameraData.setValue(imageData);
+}
+
+function capturePhoto()
+{
+    navigator.camera.getPicture(onPhotoDataSuccess, onFail,
+    {
+        quality: 20, destinationType: destinationType.DATA_URL
+    }
+    );
+}
+
+function onFail(message)
+{
+    alert('Failed because: ' + message);
+}
 
 </script>
 
 <script>
-if (navigator.userAgent.toLowerCase().match(/android/)) {
-        document.write('<script type="text/javascript" src="\/neptune\/public\/application\/lyse\/phonegap.js"><\/script>');
-} else if (navigator.userAgent.toLowerCase().match(/iphone/) || navigator.userAgent.toLowerCase().match(/ipad/)) {
-         document.write('<script type="text/javascript" src="\/neptune\/public\/application\/solid\/js\/cordova-1.8.1.js"><\/script>');
+
+document.addEventListener("deviceready", onDeviceReady, false);
+
+function onDeviceReady()
+{
+
+    document.addEventListener("backbutton", onBackButton, false);
+    navigator.splashscreen.hide();
+
 }
-else{
-
-       document.write('<script type="text/javascript" src="\/neptune\/public\/application\/lyse\/phonegap.js"><\/script>');
-
-}
-</script>
-
-<script>
-$( document ).bind( "pageloadfailed", function( event, data ){
-            var syshost = window.location.hostname;
-            var redirUrl = '';
-
-	event.preventDefault();
-	data.deferred.reject( data.absUrl, data.options );
-            window.location="http://neptune.solidgroup.no/neptune/zdfo_error.html?sap-sessioncmd=open&sap-language=NO&sap-client=100";
-
-});
 
 </script>
-<link href="neptune/public/application/zdfo_portal/css/app.css" type="text/css" rel="stylesheet" />
+<link href="neptune/public/application/zdfo_ui5_portal/css/app.css" type="text/css" rel="stylesheet" />
 
 <script src="phonegap.js"></script>
 <script>
-var valUI5Url = "http://neptune.solidgroup.no/neptune/zdfo_portal.html?sap-sessioncmd=open&sap-client=100neptune_native_ping";
+var valUI5Url = "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_native_ping";
 var valUI5Client = "100";
 </script>
 <script type="text/javascript" src="neptune/server/neptune/js/sapui5_netweaver_logon.js"></script>
 </head>
-<body ><div id="Page" data-title="DFØ Portal" style="border:0px;height:100%;margin:0px;padding:0px;width:100%;" data-role="page">
+<body  class="sapUiBody" id="body"><form><div id="MobileContent"></div><input type="hidden" name="applid" value="ZDFO_UI5_PORTAL"></form>
 <script>
+
+//GLOBALS
+ 
+ var App = new sap.m.App("App",{});
+App.placeAt("MobileContent"); 
+ var Busy = new sap.m.BusyDialog("Busy",{text:"Laster...",showCancelButton:true}); 
+ var butExitNo = new sap.m.Button("butExitNo",{text:"Nei",tap: function(oEvent) {diaExit.close();}}); 
+ var butExitYes = new sap.m.Button("butExitYes",{text:"Ja",tap: function(oEvent) {navigator.app.exitApp();}}); 
+ var diaExit = new sap.m.Dialog("diaExit",{type:"Standard",state:"Warning",leftButton:butExitNo,rightButton:butExitYes}); 
+ var txtExitInfo = new sap.m.Text("txtExitInfo",{text:"Ønsker du å avslutte applikasjonen?",textAlign:"Center"});
+diaExit.addContent(txtExitInfo); 
+ var menuPopover = new sap.m.Popover("menuPopover",{contentWidth:"300px",placement:"Bottom",showHeader:true,title:"Meny"}); 
+ var listSort = new sap.m.List("listSort",{});
+menuPopover.addContent(listSort); 
+ var goReport = new sap.m.StandardListItem("goReport",{type:"Navigation",title:"Rapportering",icon:"sap-icon://bar-chart",description:"Analyser dine timelister",press: function(oEvent) {
+
+// Navigate
+App.to("PageChart");
+
+// Rerender Chart
+chartAbs.rerender();
+chartMonth.rerender();
+
+// Close
+menuPopover.close();
+}});
+listSort.addItem(goReport); 
+ var goRelease = new sap.m.StandardListItem("goRelease",{description:"Send kladd til godkjenning",icon:"sap-icon://employee-approvals",title:"Send til godkjenning",type:"Navigation",press: function(oEvent) {
+// Get Data
+getOnlineListRelease();
+
+// Close
+menuPopover.close();
+}});
+listSort.addItem(goRelease); 
+ var goSettings = new sap.m.StandardListItem("goSettings",{description:"Sett standard profil",icon:"sap-icon://settings",title:"Innstillinger",type:"Navigation",press: function(oEvent) {
+App.to("PageSettings");
+
+// Close
+menuPopover.close();
+}});
+listSort.addItem(goSettings); 
+ var Menu = new sap.m.Page("Menu",{showHeader:false});
+App.addPage(Menu);
+var modelMenu = new sap.ui.model.json.JSONModel();
+Menu.setModel(modelMenu); 
+ var updateMenu = new sap.m.PullToRefresh("updateMenu",{refresh: function(oEvent) {
+getOnlineMenu();
+}});
+Menu.addContent(updateMenu); 
+ var Panel = new sap.m.Panel("Panel",{});
+Menu.addContent(Panel); 
+ var Logo = new sap.m.Image("Logo",{src:"http://www.dfo.no/Images/logo_dfo.png",densityAware:true,decorative:true});
+Panel.addContent(Logo); 
+ var tileMyTimesheet = new sap.m.StandardTile("tileMyTimesheet",{icon:"sap-icon://time-entry-request",info:"Vis og Registrer Timer",press: function(oEvent) {
+getOnlineCalendar();
+App.to("PageCalendar");
+}});
+Menu.addContent(tileMyTimesheet); 
+ var tileTravelExpense = new sap.m.StandardTile("tileTravelExpense",{icon:"sap-icon://travel-expense",info:"Mine Reiseregninger",number:"{/COUNT_TRIP}",press: function(oEvent) {
+// Navigate
+App.to("PageList");
+}});
+Menu.addContent(tileTravelExpense); 
+ var tileEmployeeLookup = new sap.m.StandardTile("tileEmployeeLookup",{icon:"sap-icon://employee",info:"Vis Kontaktliste",press: function(oEvent) {
+// Navigate
+App.to("Home");
+}});
+Menu.addContent(tileEmployeeLookup); 
+ var tileCatsApprove = new sap.m.StandardTile("tileCatsApprove",{icon:"sap-icon://approvals",info:"Timer til Godkjenning",number:"{/COUNT_LEAVE}",press: function(oEvent) {
+// Navigate
+App.to("MasterPeople");
+}});
+Menu.addContent(tileCatsApprove); 
+ var tileIT0014 = new sap.m.StandardTile("tileIT0014",{icon:"sap-icon://commission-check",info:"Ekstra Skattetrekk",press: function(oEvent) {
+getOnlineEkstra("");
+App.to("Ekstra");
+}});
+Menu.addContent(tileIT0014); 
+ var tileWFInbox = new sap.m.StandardTile("tileWFInbox",{icon:"sap-icon://sap-box",info:"Mine Arbeidsoppgaver",number:"{/COUNT_PR}",press: function(oEvent) {
+//getOnlineCalendar();
+App.to("WFInbox");
+}});
+Menu.addContent(tileWFInbox); 
+ var FooterMenu = new sap.m.Bar("FooterMenu",{});
+Menu.setFooter(FooterMenu); 
+ var PageCalendar = new sap.m.Page("PageCalendar",{title:"Timesheet Entry"});
+App.addPage(PageCalendar);
+var modelPageCalendar = new sap.ui.model.json.JSONModel();
+PageCalendar.setModel(modelPageCalendar); 
+ var updateCalendar = new sap.m.PullToRefresh("updateCalendar",{refresh: function(oEvent) {
+getOnlineCalendar();
+}});
+PageCalendar.addContent(updateCalendar); 
+ var HeaderCalendar = new sap.m.Bar("HeaderCalendar",{});
+PageCalendar.setCustomHeader(HeaderCalendar); 
+ var backCalendar = new sap.m.Button("backCalendar",{type:"Back",tap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+HeaderCalendar.addContentLeft(backCalendar); 
+ var butMenuCalendar = new sap.m.Button("butMenuCalendar",{icon:"sap-icon://menu2",tap: function(oEvent) {menuPopover.openBy(this);(oEvent);}});
+HeaderCalendar.addContentLeft(butMenuCalendar); 
+ var butListCATS = new sap.m.Button("butListCATS",{text:"Oversikt",tap: function(oEvent) {
+
+// Toggle Display
+CalendarLegend.setVisible(false);
+Calendar.setVisible(false);
+butToday.setVisible(false);
+
+TabBarHours.setVisible(true);
+TabBarHours.addContent(ListHours);
+
+// Empty Filter
+var binding = ListHours.getBinding("items");
+binding.filter();
+
+
+
+
+
+}});
+HeaderCalendar.addContentRight(butListCATS); 
+ var butMonth = new sap.m.Button("butMonth",{text:"Måned",tap: function(oEvent) {
+// Set Filter
+Calendar.fireTapOnDate();
+
+if (TabBarHours.getVisible() == true)
+{
+    PageCalendar.addContent(ListHours);
+}
+
+TabBarHours.setVisible(false);
+
+// Toggle Display
+Calendar.setVisible(true);
+Calendar.setSingleRow(false);
+butToday.setVisible(true);
+
+
+}});
+HeaderCalendar.addContentRight(butMonth); 
+ var butWeek = new sap.m.Button("butWeek",{text:"Uke",tap: function(oEvent) {
+// Set Filter
+Calendar.fireTapOnDate();
+
+if (TabBarHours.getVisible() == true)
+{
+    PageCalendar.addContent(ListHours);
+}
+
+TabBarHours.setVisible(false);
+
+
+// Toggle Display
+Calendar.setVisible(true);
+Calendar.setSingleRow(true);
+butToday.setVisible(true);
+
+}});
+HeaderCalendar.addContentRight(butWeek); 
+ var CalendarLegend = new sap.me.CalendarLegend("CalendarLegend",{design:"Approval",expandable:false,legendForType01:"Godkjent",legendForType04:"Sendt til godkjenning",legendForType06:"Kladd",legendForType07:"Avvist",visible:false});
+PageCalendar.addContent(CalendarLegend); 
+ var Calendar = new sap.me.Calendar("Calendar",{width:"100%",swipeToNavigate:true,firstDayOffset:1,design:"Approval",tapOnDate: function(oEvent) {
+// Calendar Get Selected Date
+var value = this.getSelectedDates();
+
+
+// Check if any selection
+if (value.length===0)
+{
+    var date  = new Date();
+    Calendar.toggleDatesSelection([date],true);
+}
+else
+{
+    var date  = new Date(value);
+}
+
+var yyyy = date.getFullYear().toString();
+var mm = date.getMonth() + 1;
+var dd = date.getDate();
+
+if(mm.toString().length == 1)
+{
+    mm = "0" + mm;
+}
+if(dd.toString().length == 1)
+{
+    dd = "0" + dd;
+}
+var value = yyyy + mm + dd;
+
+// List Header
+//ListHours.setHeaderText(Calendar.getSelectedDates());
+
+// Set List Filter
+var binding = ListHours.getBinding("items");
+var filter = new sap.ui.model.Filter("WORKDATE", "EQ", value);
+binding.filter([filter]);
+
+// Set Current Date
+Calendar.setCurrentDate(Calendar.getSelectedDates());
+
+
+}});
+PageCalendar.addContent(Calendar); 
+ var TabBarHours = new sap.m.IconTabBar("TabBarHours",{expandable:false,visible:false,select: function(oEvent) {
+
+// Set filter when pushing the IconTabBar
+// Replace yourList with List Name
+
+var binding = ListHours.getBinding("items");
+var selected = oEvent.getParameter("selectedKey");
+
+if (selected == "ALL")
+{
+    binding.filter([]);
+}
+else
+{
+    var filter = new sap.ui.model.Filter("STATUS", "EQ", selected);
+    binding.filter([filter]);
+}
+
+
+}});
+PageCalendar.addContent(TabBarHours); 
+ var FilterAll = new sap.m.IconTabFilter("FilterAll",{count:"{/COUNT_ALL}",icon:"sap-icon://timesheet",key:"ALL",text:"Alle"});
+TabBarHours.addItem(FilterAll); 
+ var FilterSeparator = new sap.m.IconTabSeparator("FilterSeparator",{});
+TabBarHours.addItem(FilterSeparator); 
+ var FilterUnreleased = new sap.m.IconTabFilter("FilterUnreleased",{text:"Kladd",key:10,iconColor:"Critical",icon:"sap-icon://create-entry-time",count:"{/COUNT_UNRELEASE}"});
+TabBarHours.addItem(FilterUnreleased); 
+ var FilterReleased = new sap.m.IconTabFilter("FilterReleased",{count:"{/COUNT_RELEASE}",icon:"sap-icon://time-entry-request",iconColor:"Default",key:20,text:"Sendt til godkjenning"});
+TabBarHours.addItem(FilterReleased); 
+ var FilterApproved = new sap.m.IconTabFilter("FilterApproved",{count:"{/COUNT_APPROVE}",icon:"sap-icon://accept",iconColor:"Positive",key:30,text:"Godkjent"});
+TabBarHours.addItem(FilterApproved); 
+ var FilterRejected = new sap.m.IconTabFilter("FilterRejected",{text:"Avvist",key:40,iconColor:"Critical",icon:"sap-icon://decline",count:"{/COUNT_REJECT}"});
+TabBarHours.addItem(FilterRejected); 
+ var ListHours = new sap.m.List("ListHours",{headerText: "Timeregistrering",showNoData:false,visible:false});
+PageCalendar.addContent(ListHours);
+var modelListHours = new sap.ui.model.json.JSONModel();
+ListHours.setModel(modelListHours); 
+ var ItemHours = new sap.m.ObjectListItem("ItemHours",{intro:"{WORKDATE_TXT}",number:"{CATSHOURS}",numberUnit:"{UNIT}",title:{parts:["ABS_ATT_TYPE_TXT","WAGETYPE_TXT"]},type:"Navigation",tap: function(oEvent) {
+
+var context = oEvent.oSource.getBindingContext();
+var value = context.getProperty("COUNTER");
+
+timeData = modelListHours.getData();
+
+$.each(timeData, function (i, data)
+{
+
+    if (data.COUNTER === value)
+    {
+
+      modelPageEntry.setData(data);
+    }
+}
+);
+
+// Set to ReadOnly
+ListReturn.setVisible(false);
+
+ItemEntryAbs.setType("Inactive");
+ItemEntryWage.setType("Inactive");
+ItemEntryWBS.setType("Inactive");
+ItemEntryCC.setType("Inactive");
+ItemEntryNetwork.setType("Inactive");
+ItemEntryAct.setType("Inactive");
+ItemEntryiOrder.setType("Inactive");
+
+butGoFav.setVisible(false);
+butEntrySave.setVisible(false);
+butEntryDelete.setVisible(true);
+
+inEntryDate.setEnabled(false);
+inEntryFrom.setEnabled(false);
+inEntryTo.setEnabled(false);
+inEntryHours.setEnabled(false);
+inEntryComment.setEnabled(false);
+
+
+// Navigate
+App.to("PageEntry");
+}});
+ListHours.bindAggregation("items", "/",ItemHours); 
+ var ItemHoursStatus = new sap.m.ObjectStatus("ItemHoursStatus",{text:"{STATUS_TEXT}",state:"{STATUS_STATE}"});
+ItemHours.setFirstStatus(ItemHoursStatus); 
+ var ItemHoursActivity = new sap.m.ObjectAttribute("ItemHoursActivity",{text:{parts:["ACTTYPE","ACTIVITY_TXT"]},visible:"{SHOW_ACTIVITY}"});
+ItemHours.addAttribute(ItemHoursActivity); 
+ var ItemHoursWBS = new sap.m.ObjectAttribute("ItemHoursWBS",{text:{parts:["WBS_ELEMENT","WBS_TXT"]},visible:"{SHOW_WBS}"});
+ItemHours.addAttribute(ItemHoursWBS); 
+ var ItemHoursCC = new sap.m.ObjectAttribute("ItemHoursCC",{text:{parts:["REC_CCTR","COCNTR_TXT"]},visible:"{SHOW_COSTCENTER}"});
+ItemHours.addAttribute(ItemHoursCC); 
+ var ItemHoursNetwork = new sap.m.ObjectAttribute("ItemHoursNetwork",{text:"{NETWORK_TXT}",visible:"{SHOW_NETWORK}"});
+ItemHours.addAttribute(ItemHoursNetwork); 
+ var ItemHoursiOrder = new sap.m.ObjectAttribute("ItemHoursiOrder",{text:"{IORDER_TXT}",visible:"{SHOW_IORDER}"});
+ItemHours.addAttribute(ItemHoursiOrder); 
+ var ItemHoursOperation = new sap.m.ObjectAttribute("ItemHoursOperation",{text:{parts:["AVTIVITY","AVTIVITY_TXT"]},visible:"{SHOW_OPERATION}"});
+ItemHours.addAttribute(ItemHoursOperation); 
+ var footerCalendar = new sap.m.Bar("footerCalendar",{translucent:true});
+PageCalendar.setFooter(footerCalendar); 
+ var butInfo = new sap.m.Button("butInfo",{icon:"sap-icon://hide",tap: function(oEvent) {
+if (CalendarLegend.getVisible())
+{
+    CalendarLegend.setVisible(false);
+}
+else
+{
+    CalendarLegend.setVisible(true);
+}
+
+}});
+footerCalendar.addContentLeft(butInfo); 
+ var butToday = new sap.m.Button("butToday",{icon:"sap-icon://calendar",tap: function(oEvent) {
+var dateNow =new Date();
+Calendar.setCurrentDate(dateNow);
+}});
+footerCalendar.addContentMiddle(butToday); 
+ var butCreate = new sap.m.Button("butCreate",{icon:"sap-icon://create-entry-time",tap: function(oEvent) {
+// Check for Profile
+
+// Set Busy
+PageCalendar.setBusyIndicatorDelay(0);
+PageCalendar.setBusy(true);
+
+// Calendar Get Selected Date
+var value = Calendar.getSelectedDates();
+var date  = new Date(value);
+var yyyy = date.getFullYear().toString();
+var mm = date.getMonth() + 1;
+var dd = date.getDate();
+
+if(mm.toString().length == 1)
+{
+    mm = "0" + mm;
+}
+if(dd.toString().length == 1)
+{
+    dd = "0" + dd;
+}
+var value = yyyy + mm + dd;
+
+
+// Set Edit Mode
+ListReturn.setVisible(false);
+
+ItemEntryAbs.setType("Navigation");
+ItemEntryWage.setType("Navigation");
+ItemEntryWBS.setType("DetailAndActive");
+ItemEntryCC.setType("DetailAndActive");
+ItemEntryNetwork.setType("DetailAndActive");
+ItemEntryAct.setType("DetailAndActive");
+ItemEntryiOrder.setType("DetailAndActive");
+
+butGoFav.setVisible(true);
+butEntrySave.setVisible(true);
+butEntryDelete.setVisible(false);
+
+inEntryDate.setEnabled(true);
+inEntryFrom.setEnabled(true);
+inEntryTo.setEnabled(true);
+inEntryHours.setEnabled(true);
+inEntryComment.setEnabled(true);
+
+// Get Entry Data
+getOnlinePageEntry(value);
+
+
+
+}});
+footerCalendar.addContentRight(butCreate); 
+ var PageEntry = new sap.m.Page("PageEntry",{title:"Registrer Timer"});
+App.addPage(PageEntry);
+var modelPageEntry = new sap.ui.model.json.JSONModel();
+PageEntry.setModel(modelPageEntry); 
+ var ListReturn = new sap.m.List("ListReturn",{headerText: "Status",showNoData:false,visible:false});
+PageEntry.addContent(ListReturn);
+var modelListReturn = new sap.ui.model.json.JSONModel();
+ListReturn.setModel(modelListReturn); 
+ var ItemReturn = new sap.m.ObjectListItem("ItemReturn",{});
+ListReturn.bindAggregation("items", "/",ItemReturn); 
+ var ItemReturnMessage = new sap.m.ObjectStatus("ItemReturnMessage",{state:"Error",text:"{MESSAGE}"});
+ItemReturn.setFirstStatus(ItemReturnMessage); 
+ var ListEntryTop = new sap.m.List("ListEntryTop",{headerText: "Generell Informasjon"});
+PageEntry.addContent(ListEntryTop); 
+ var itmEntryDate = new sap.m.InputListItem("itmEntryDate",{label: "Dato"});
+ListEntryTop.addItem(itmEntryDate); 
+ var inEntryDate = new sap.m.DateTimeInput("inEntryDate",{valueFormat:"yyyyMMdd",value:"{/WORKDATE}",type:"Date",placeholder:"Workday",displayFormat:"E dd.MM.yy"});
+itmEntryDate.addContent(inEntryDate); 
+ var itmEntryFrom = new sap.m.InputListItem("itmEntryFrom",{label: "Tid Fra",visible:"{/SHOW_CLOCK}"});
+ListEntryTop.addItem(itmEntryFrom); 
+ var inEntryFrom = new sap.m.DateTimeInput("inEntryFrom",{value:"{/STARTTIME}",valueFormat:"HHmmss",type:"Time",displayFormat:"HH:mm"});
+itmEntryFrom.addContent(inEntryFrom); 
+ var itmEntryTo = new sap.m.InputListItem("itmEntryTo",{label: "Time Til",visible:"{/SHOW_CLOCK}"});
+ListEntryTop.addItem(itmEntryTo); 
+ var inEntryTo = new sap.m.DateTimeInput("inEntryTo",{valueFormat:"HHmmss",value:"{/ENDTIME}",type:"Time",displayFormat:"HH:mm"});
+itmEntryTo.addContent(inEntryTo); 
+ var itmEntryHours = new sap.m.InputListItem("itmEntryHours",{label: "Timer",visible:"{/SHOW_HOURS}"});
+ListEntryTop.addItem(itmEntryHours); 
+ var inEntryHours = new sap.m.DateTimeInput("inEntryHours",{displayFormat:"HH:mm",editable:true,enabled:true,type:"Time",value:"{/HOURS_CHANGED}",valueFormat:"hhmmss"});
+itmEntryHours.addContent(inEntryHours); 
+ var itmEntryComment = new sap.m.InputListItem("itmEntryComment",{label: "Kommentar"});
+ListEntryTop.addItem(itmEntryComment); 
+ var inEntryComment = new sap.m.Input("inEntryComment",{type:"Text",value:"{/SHORTTEXT}"});
+itmEntryComment.addContent(inEntryComment); 
+ var ListEntryAss = new sap.m.List("ListEntryAss",{headerText: "Oppdrag"});
+PageEntry.addContent(ListEntryAss); 
+ var ItemEntryAbs = new sap.m.ObjectListItem("ItemEntryAbs",{intro:"Type Time",title:"{/ABS_ATT_TYPE_TXT}",type:"Navigation",visible:"{/SHOW_ABS}",tap: function(oEvent) {App.to("PageAbs");(oEvent);}});
+ListEntryAss.addItem(ItemEntryAbs); 
+ var ItemEntryWage = new sap.m.ObjectListItem("ItemEntryWage",{visible:"{/SHOW_WAGE}",type:"Navigation",title:"{/WAGETYPE_TXT}",intro:"Wage Type",tap: function(oEvent) {App.to("PageWage");(oEvent);}});
+ListEntryAss.addItem(ItemEntryWage); 
+ var ListEntryCost = new sap.m.List("ListEntryCost",{});
+PageEntry.addContent(ListEntryCost); 
+ var ItemEntryAct = new sap.m.ObjectListItem("ItemEntryAct",{intro:"Aktivitet",title:"{/ACTIVITY_TXT}",type:"DetailAndActive",visible:"{/SHOW_ACTIVITY}",detailTap: function(oEvent) {
+// Update Data
+var data = modelPageEntry.getData();
+data.ACTTYPE = "";
+data.ACTIVITY_TXT = "";
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Update Detail Icon
+updateDetailIcon();
+},tap: function(oEvent) {App.to("PageAct");(oEvent);}});
+ListEntryCost.addItem(ItemEntryAct); 
+ var ItemEntryActKey = new sap.m.ObjectAttribute("ItemEntryActKey",{text:"{/ACTTYPE}"});
+ItemEntryAct.addAttribute(ItemEntryActKey); 
+ var ItemEntryWBS = new sap.m.ObjectListItem("ItemEntryWBS",{visible:"{/SHOW_WBS}",type:"DetailAndActive",title:"{/WBS_TXT}",intro:"WBS Element",detailTap: function(oEvent) {
+// Update Data
+var data = modelPageEntry.getData();
+data.WBS_ELEMENT = "";
+data.WBS_TXT = "";
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Update Detail Icon
+updateDetailIcon();
+},tap: function(oEvent) {App.to("PageSearchWBS");(oEvent);}});
+ListEntryCost.addItem(ItemEntryWBS); 
+ var ItemEntryWBSKey = new sap.m.ObjectAttribute("ItemEntryWBSKey",{text:"{/WBS_ELEMENT}"});
+ItemEntryWBS.addAttribute(ItemEntryWBSKey); 
+ var ItemEntryCC = new sap.m.ObjectListItem("ItemEntryCC",{intro:"Kostnadssted",title:"{/COCNTR_TXT}",type:"DetailAndActive",visible:"{/SHOW_COSTCENTER}",detailTap: function(oEvent) {
+// Update Data
+var data = modelPageEntry.getData();
+data.REC_CCTR = "";
+data.COCNTR_TXT = "";
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Update Detail Icon
+updateDetailIcon();
+},tap: function(oEvent) {App.to("PageSearchCC");(oEvent);}});
+ListEntryCost.addItem(ItemEntryCC); 
+ var ItemEntryCCKey = new sap.m.ObjectAttribute("ItemEntryCCKey",{text:"{/REC_CCTR}"});
+ItemEntryCC.addAttribute(ItemEntryCCKey); 
+ var ItemEntryNetwork = new sap.m.ObjectListItem("ItemEntryNetwork",{intro:"Nettverk",title:"{/NETWORK_TXT}",type:"DetailAndActive",visible:"{/SHOW_NETWORK}",tap: function(oEvent) {App.to("PageSearchNetwork");(oEvent);},detailTap: function(oEvent) {
+// Update Data
+var data = modelPageEntry.getData();
+data.NETWORK = "";
+data.NETWORK_TXT = "";
+data.AVTIVITY = "";
+data.AVTIVITY_TXT = "";
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Update Detail Icon
+updateDetailIcon();
+}});
+ListEntryCost.addItem(ItemEntryNetwork); 
+ var ItemEntryOperation = new sap.m.ObjectAttribute("ItemEntryOperation",{text:{parts:["/AVTIVITY","/AVTIVITY_TXT"]}});
+ItemEntryNetwork.addAttribute(ItemEntryOperation); 
+ var ItemEntryiOrder = new sap.m.ObjectListItem("ItemEntryiOrder",{visible:"{/SHOW_IORDER}",type:"DetailAndActive",title:"{/IORDER_TXT}",intro:"Intern Ordre",tap: function(oEvent) {App.to("PageSearchiOrder");(oEvent);},detailTap: function(oEvent) {
+// Update Data
+var data = modelPageEntry.getData();
+data.REC_ORDER = "";
+data.IORDER_TXT = "";
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Update Detail Icon
+updateDetailIcon();
+}});
+ListEntryCost.addItem(ItemEntryiOrder); 
+ var FooterEntry = new sap.m.Bar("FooterEntry",{});
+PageEntry.setFooter(FooterEntry); 
+ var backEntry = new sap.m.Button("backEntry",{type:"Back",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterEntry.addContentLeft(backEntry); 
+ var butGoFav = new sap.m.Button("butGoFav",{icon:"sap-icon://favorite",tap: function(oEvent) {App.to("PageFav");(oEvent);}});
+FooterEntry.addContentMiddle(butGoFav); 
+ var butEntrySave = new sap.m.Button("butEntrySave",{icon:"sap-icon://save",press: function(oEvent) {
+// Set Busy
+PageEntry.setBusyIndicatorDelay(0);
+PageEntry.setBusy(true);
+
+getOnlineSaveCATS();
+}});
+FooterEntry.addContentRight(butEntrySave); 
+ var butEntryDelete = new sap.m.Button("butEntryDelete",{icon:"sap-icon://delete",press: function(oEvent) {
+// Set Busy
+PageEntry.setBusyIndicatorDelay(0);
+PageEntry.setBusy(true);
+
+getOnlineDelete();
+}});
+FooterEntry.addContentRight(butEntryDelete); 
+ var PageChart = new sap.m.Page("PageChart",{title:"Min Timeregistrering",backgroundDesign:"List"});
+App.addPage(PageChart); 
+ var chartMonthHeader = new sap.m.ObjectHeader("chartMonthHeader",{icon:"sap-icon://line-chart",intro:"Beskrivelse",title:"Timer pr måned"});
+PageChart.addContent(chartMonthHeader); 
+ var chartMonth = new sap.viz.ui5.Line("chartMonth",{width:"100%",legend: new sap.viz.ui5.types.legend.Common({drawingEffect:"glossy",visible:false}),plotArea: new sap.viz.ui5.types.Line({drawingEffect:"glossy",marker: new sap.viz.ui5.types.Line_marker({shape:"circle",visible:true})})});
+PageChart.addContent(chartMonth); 
+ var chartHoursData = new sap.viz.ui5.data.FlattenedDataset("chartHoursData",{});
+chartMonth.setDataset(chartHoursData);
+var modelchartHoursData = new sap.ui.model.json.JSONModel();
+chartHoursData.setModel(modelchartHoursData);
+chartHoursData.bindData("/"); 
+ var chartHoursDim = new sap.viz.ui5.data.DimensionDefinition("chartHoursDim",{axis:1,name:"Dager",value:"{VALUE_Y}"});
+chartHoursData.addDimension(chartHoursDim); 
+ var chartHoursMeasure = new sap.viz.ui5.data.MeasureDefinition("chartHoursMeasure",{name:"Timer",value:"{VALUE}"});
+chartHoursData.addMeasure(chartHoursMeasure); 
+ var chartAbsHeader = new sap.m.ObjectHeader("chartAbsHeader",{icon:"sap-icon://pie-chart",intro:"Beskrivelse",title:"Timer pr fraværstype/Prosjekt"});
+PageChart.addContent(chartAbsHeader); 
+ var chartAbs = new sap.viz.ui5.Donut("chartAbs",{width:"100%",legend: new sap.viz.ui5.types.legend.Common({drawingEffect:"glossy"}),plotArea: new sap.viz.ui5.types.Pie({drawingEffect:"glossy"})});
+PageChart.addContent(chartAbs); 
+ var chartAbsData = new sap.viz.ui5.data.FlattenedDataset("chartAbsData",{});
+chartAbs.setDataset(chartAbsData);
+var modelchartAbsData = new sap.ui.model.json.JSONModel();
+chartAbsData.setModel(modelchartAbsData);
+chartAbsData.bindData("/"); 
+ var chartAbsDim = new sap.viz.ui5.data.DimensionDefinition("chartAbsDim",{value:"{VALUE_Y}",name:"Fravær/Prosjekt",axis:1});
+chartAbsData.addDimension(chartAbsDim); 
+ var chartAbsMeasure = new sap.viz.ui5.data.MeasureDefinition("chartAbsMeasure",{name:"Timer",value:"{VALUE}"});
+chartAbsData.addMeasure(chartAbsMeasure); 
+ var FooterChart = new sap.m.Bar("FooterChart",{});
+PageChart.setFooter(FooterChart); 
+ var backChartEntry = new sap.m.Button("backChartEntry",{type:sap.m.ButtonType.Back,tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterChart.addContentLeft(backChartEntry); 
+ var PageFav = new sap.m.Page("PageFav",{title:"Favoritter"});
+App.addPage(PageFav); 
+ var ListFav = new sap.m.List("ListFav",{headerText: "Liste",showNoData:false});
+PageFav.addContent(ListFav);
+var modelListFav = new sap.ui.model.json.JSONModel();
+ListFav.setModel(modelListFav); 
+ var ItemFav = new sap.m.ObjectListItem("ItemFav",{type:"Navigation",title:{parts:["ABS_ATT_TYPE","WAGETYPE","ABS_ATT_TYPE_TXT","WAGETYPE_TXT"]},numberUnit:"TIMES",number:"{RECORDS}",tap: function(oEvent) {
+
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+data = modelPageEntry.getData();
+data.ABS_ATT_TYPE = context.getProperty("ABS_ATT_TYPE");
+data.ABS_ATT_TYPE_TXT = context.getProperty("ABS_ATT_TYPE") + ' - ' + context.getProperty("ABS_ATT_TYPE_TXT");
+data.ACTIVITY_TXT = context.getProperty("ACTIVITY_TXT");
+data.ACTTYPE = context.getProperty("ACTTYPE");
+data.AVTIVITY = context.getProperty("AVTIVITY");
+data.AVTIVITY_TXT = context.getProperty("AVTIVITY_TXT");
+data.IORDER_TXT = context.getProperty("IORDER_TXT");
+data.NETWORK = context.getProperty("NETWORK");
+data.NETWORK_TXT = context.getProperty("NETWORK_TXT");
+data.WAGETYPE = context.getProperty("WAGETYPE");
+data.WAGETYPE_TXT = context.getProperty("WAGETYPE_TXT");
+data.WBS_ELEMENT = context.getProperty("WBS_ELEMENT");
+data.WBS_TXT = context.getProperty("WBS_TXT");
+data.COCNTR_TXT = context.getProperty("COCNTR_TXT");
+data.REC_CCTR = context.getProperty("REC_CCTR");
+
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Navigate
+App.backToPage("PageEntry");
+}});
+ListFav.bindAggregation("items", "/",ItemFav); 
+ var ItemFavActivity = new sap.m.ObjectAttribute("ItemFavActivity",{text:{parts:["ACTTYPE","ACTIVITY_TXT"]},visible:"{SHOW_ACTIVITY}"});
+ItemFav.addAttribute(ItemFavActivity); 
+ var ItemFavWBS = new sap.m.ObjectAttribute("ItemFavWBS",{text:{parts:["WBS_ELEMENT","WBS_TXT"]},visible:"{SHOW_WBS}"});
+ItemFav.addAttribute(ItemFavWBS); 
+ var ItemFavCC = new sap.m.ObjectAttribute("ItemFavCC",{text:"{COCNTR_TXT}",visible:"{SHOW_COSTCENTER}"});
+ItemFav.addAttribute(ItemFavCC); 
+ var ItemFavNetwork = new sap.m.ObjectAttribute("ItemFavNetwork",{text:"{NETWORK_TXT}",visible:"{SHOW_NETWORK}"});
+ItemFav.addAttribute(ItemFavNetwork); 
+ var ItemFaviOrder = new sap.m.ObjectAttribute("ItemFaviOrder",{text:"{IORDER_TXT}",visible:"{SHOW_IORDER}"});
+ItemFav.addAttribute(ItemFaviOrder); 
+ var ItemFavOperation = new sap.m.ObjectAttribute("ItemFavOperation",{visible:"{SHOW_OPERATION}",text:{parts:["AVTIVITY","AVTIVITY_TXT"]}});
+ItemFav.addAttribute(ItemFavOperation); 
+ var FooterFav = new sap.m.Bar("FooterFav",{});
+PageFav.setFooter(FooterFav); 
+ var backFav = new sap.m.Button("backFav",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterFav.addContentLeft(backFav); 
+ var homeFav = new sap.m.Button("homeFav",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterFav.addContentRight(homeFav); 
+ var PageAbs = new sap.m.Page("PageAbs",{title:"Type Arbeidstimer"});
+App.addPage(PageAbs); 
+ var SearchAbsHeader = new sap.m.List("SearchAbsHeader",{headerText: "Filter",showNoData:false});
+PageAbs.addContent(SearchAbsHeader); 
+ var SearchAbs = new sap.m.SearchField("SearchAbs",{width:"100%",liveChange: function(oEvent) {
+
+// Filter
+var binding = ListAbsAtt.getBinding("items");
+var filter = new sap.ui.model.Filter("ATEXT", "Contains", SearchAbs.getValue());
+binding.filter([filter]);
+
+}});
+PageAbs.addContent(SearchAbs); 
+ var ListAbsAtt = new sap.m.List("ListAbsAtt",{headerText: "Liste",showNoData:false});
+PageAbs.addContent(ListAbsAtt);
+var modelListAbsAtt = new sap.ui.model.json.JSONModel();
+ListAbsAtt.setModel(modelListAbsAtt); 
+ var ItemAbsAtt = new sap.m.StandardListItem("ItemAbsAtt",{title:{parts:["AWART","ATEXT"]},type:"Navigation",press: function(oEvent) {
+
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+var data = modelPageEntry.getData();
+data.ABS_ATT_TYPE_TXT = context.getProperty("AWART") + ' ' + context.getProperty("ATEXT");
+data.ABS_ATT_TYPE = context.getProperty("AWART");
+data.WAGETYPE = "";
+data.WAGETYPE_TXT = "";
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Navigate
+App.backToPage("PageEntry");
+
+}});
+ListAbsAtt.bindAggregation("items", "/",ItemAbsAtt); 
+ var FooterAbs = new sap.m.Bar("FooterAbs",{});
+PageAbs.setFooter(FooterAbs); 
+ var backAbs = new sap.m.Button("backAbs",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterAbs.addContentLeft(backAbs); 
+ var homeAbs = new sap.m.Button("homeAbs",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterAbs.addContentRight(homeAbs); 
+ var PageAct = new sap.m.Page("PageAct",{title:"Aktivitet"});
+App.addPage(PageAct); 
+ var SearchActHeader = new sap.m.List("SearchActHeader",{headerText: "Filter",showNoData:false});
+PageAct.addContent(SearchActHeader); 
+ var SearchAct = new sap.m.SearchField("SearchAct",{width:"100%",liveChange: function(oEvent) {
+
+// Filter
+var binding = ListAct.getBinding("items");
+var filter = new sap.ui.model.Filter("DESCRIPT", "Contains", SearchAct.getValue());
+
+binding.filter([filter]);
+
+}});
+PageAct.addContent(SearchAct); 
+ var ListAct = new sap.m.List("ListAct",{headerText: "Liste",showNoData:false});
+PageAct.addContent(ListAct);
+var modelListAct = new sap.ui.model.json.JSONModel();
+ListAct.setModel(modelListAct); 
+ var ItemAct = new sap.m.StandardListItem("ItemAct",{type:"Navigation",title:"{DESCRIPT}",description:"{ACTTYPE}",tap: function(oEvent) {
+// Navigate
+App.backToPage("PageEntry");
+
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+var data = modelPageEntry.getData();
+data.ACTTYPE = context.getProperty("ACTTYPE");
+data.ACTIVITY_TXT = context.getProperty("DESCRIPT");
+
+// Update Model
+modelPageEntry.setData(data);
+
+
+// Update Detail Icon
+updateDetailIcon();
+}});
+ListAct.bindAggregation("items", "/",ItemAct); 
+ var FooterAct = new sap.m.Bar("FooterAct",{});
+PageAct.setFooter(FooterAct); 
+ var backAct = new sap.m.Button("backAct",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterAct.addContentLeft(backAct); 
+ var homeAct = new sap.m.Button("homeAct",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterAct.addContentRight(homeAct); 
+ var PageWage = new sap.m.Page("PageWage",{title:"Type Lønn"});
+App.addPage(PageWage); 
+ var SearchWageHeader = new sap.m.List("SearchWageHeader",{headerText: "Filter",showNoData:false});
+PageWage.addContent(SearchWageHeader); 
+ var SearchWage = new sap.m.SearchField("SearchWage",{width:"100%",liveChange: function(oEvent) {
+
+// Filter
+var binding = ListWage.getBinding("items");
+var filter = new sap.ui.model.Filter("WAGELTEXT", "Contains", SearchWage.getValue());
+binding.filter([filter]);
+
+}});
+PageWage.addContent(SearchWage); 
+ var ListWage = new sap.m.List("ListWage",{headerText: "Liste",showNoData:false});
+PageWage.addContent(ListWage);
+var modelListWage = new sap.ui.model.json.JSONModel();
+ListWage.setModel(modelListWage); 
+ var ItemWage = new sap.m.StandardListItem("ItemWage",{title:"{WAGELTEXT}",type:"Navigation",tap: function(oEvent) {
+
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+var data = modelPageEntry.getData();
+data.ABS_ATT_TYPE_TXT = "";
+data.ABS_ATT_TYPE = "";
+data.WAGETYPE = context.getProperty("WAGETYPE");
+data.WAGETYPE_TXT = context.getProperty("WAGELTEXT");
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Navigate
+App.backToPage("PageEntry");
+}});
+ListWage.bindAggregation("items", "/",ItemWage); 
+ var FooterWage = new sap.m.Bar("FooterWage",{});
+PageWage.setFooter(FooterWage); 
+ var backWage = new sap.m.Button("backWage",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterWage.addContentLeft(backWage); 
+ var homeWage = new sap.m.Button("homeWage",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterWage.addContentRight(homeWage); 
+ var PageRelease = new sap.m.Page("PageRelease",{title:"Kladd"});
+App.addPage(PageRelease); 
+ var ListReturnRelease = new sap.m.List("ListReturnRelease",{headerText: "Status",showNoData:false,visible:false});
+PageRelease.addContent(ListReturnRelease);
+var modelListReturnRelease = new sap.ui.model.json.JSONModel();
+ListReturnRelease.setModel(modelListReturnRelease); 
+ var ItemReturnRelease = new sap.m.ObjectListItem("ItemReturnRelease",{});
+ListReturnRelease.bindAggregation("items", "/",ItemReturnRelease); 
+ var ItemReturnMessageRelease = new sap.m.ObjectStatus("ItemReturnMessageRelease",{state:"Error",text:"{MESSAGE}"});
+ItemReturnRelease.setFirstStatus(ItemReturnMessageRelease); 
+ var ListRelease = new sap.m.List("ListRelease",{includeItemInSelection:true,mode:"MultiSelect",showNoData:false});
+PageRelease.addContent(ListRelease);
+var modelListRelease = new sap.ui.model.json.JSONModel();
+ListRelease.setModel(modelListRelease); 
+ var ItemRelease = new sap.m.ObjectListItem("ItemRelease",{title:{parts:["ABS_ATT_TYPE_TXT","WAGETYPE_TXT"]},selected:"{SELECTED}",numberUnit:"{UNIT}",number:"{CATSHOURS}",intro:"{SHOW_CLOCK}"});
+ListRelease.bindAggregation("items", "/",ItemRelease); 
+ var ItemReleaseStatus = new sap.m.ObjectStatus("ItemReleaseStatus",{state:"{STATUS_STATE}",text:"{STATUS_TEXT}"});
+ItemRelease.setFirstStatus(ItemReleaseStatus); 
+ var ItemReleaseActivity = new sap.m.ObjectAttribute("ItemReleaseActivity",{text:{parts:["ACTTYPE","ACTIVITY_TXT"]}});
+ItemRelease.addAttribute(ItemReleaseActivity); 
+ var ItemReleaseWBS = new sap.m.ObjectAttribute("ItemReleaseWBS",{text:{parts:["WBS_ELEMENT","WBS_TXT"]}});
+ItemRelease.addAttribute(ItemReleaseWBS); 
+ var ItemReleaseCC = new sap.m.ObjectAttribute("ItemReleaseCC",{text:{parts:["REC_CCTR","COCNTR_TXT"]}});
+ItemRelease.addAttribute(ItemReleaseCC); 
+ var ItemReleaseNetwork = new sap.m.ObjectAttribute("ItemReleaseNetwork",{text:"{NETWORK_TXT}"});
+ItemRelease.addAttribute(ItemReleaseNetwork); 
+ var ItemReleaseOperation = new sap.m.ObjectAttribute("ItemReleaseOperation",{text:{parts:["AVTIVITY","AVTIVITY_TXT"]}});
+ItemRelease.addAttribute(ItemReleaseOperation); 
+ var FooterRelease = new sap.m.Bar("FooterRelease",{});
+PageRelease.setFooter(FooterRelease); 
+ var backRelease = new sap.m.Button("backRelease",{type:"Back",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterRelease.addContentLeft(backRelease); 
+ var butRelease = new sap.m.Button("butRelease",{icon:"sap-icon://accept",tap: function(oEvent) {
+// Set Busy
+PageRelease.setBusyIndicatorDelay(0);
+PageRelease.setBusy(true);
+
+getOnlineRelease();
+}});
+FooterRelease.addContentRight(butRelease); 
+ var PageSettings = new sap.m.Page("PageSettings",{title:"Instillinger"});
+App.addPage(PageSettings);
+var modelPageSettings = new sap.ui.model.json.JSONModel();
+PageSettings.setModel(modelPageSettings); 
+ var ListSettingsProfile = new sap.m.List("ListSettingsProfile",{headerText: "Profil"});
+PageSettings.addContent(ListSettingsProfile); 
+ var itemSettingsProfile = new sap.m.InputListItem("itemSettingsProfile",{label: "Standard"});
+ListSettingsProfile.addItem(itemSettingsProfile); 
+ var inProfile = new sap.m.Select("inProfile",{title:"Profil",selectedKey:"{/VARIANT}",change: function(oEvent) {setCacheSettings();}});
+itemSettingsProfile.addContent(inProfile); 
+ var ListSettingsCalendar = new sap.m.List("ListSettingsCalendar",{headerText: "Kalender"});
+PageSettings.addContent(ListSettingsCalendar); 
+ var itemSettingsFirstDay = new sap.m.InputListItem("itemSettingsFirstDay",{label: "Startdag"});
+ListSettingsCalendar.addItem(itemSettingsFirstDay); 
+ var inDays = new sap.m.Select("inDays",{title:"Calendar",selectedKey:"{/CAL_FIRSTDAYOFFSET}",change: function(oEvent) {
+setCacheSettings();
+
+Calendar.setFirstDayOffset(parseInt(modelPageSettings.getData().CAL_FIRSTDAYOFFSET));
+}});
+itemSettingsFirstDay.addContent(inDays); 
+ var day0 = new sap.ui.core.Item("day0",{text:"Søndag",key:0});
+inDays.addItem(day0); 
+ var day1 = new sap.ui.core.Item("day1",{key:1,text:"Mandag"});
+inDays.addItem(day1); 
+ var day2 = new sap.ui.core.Item("day2",{key:2,text:"Tirsdag"});
+inDays.addItem(day2); 
+ var day3 = new sap.ui.core.Item("day3",{key:3,text:"Onsdag"});
+inDays.addItem(day3); 
+ var day4 = new sap.ui.core.Item("day4",{key:4,text:"Torsdag"});
+inDays.addItem(day4); 
+ var day5 = new sap.ui.core.Item("day5",{key:5,text:"Fredag"});
+inDays.addItem(day5); 
+ var day6 = new sap.ui.core.Item("day6",{key:6,text:"Lørdag"});
+inDays.addItem(day6); 
+ var itemSettingsStart = new sap.m.InputListItem("itemSettingsStart",{label: "Start med"});
+ListSettingsCalendar.addItem(itemSettingsStart); 
+ var inCalStart = new sap.m.Switch("inCalStart",{customTextOff:"Month",customTextOn:"Week",state:"{/CAL_SETSINGLEROW}",change: function(oEvent) {
+setCacheSettings();
+
+Calendar.setSingleRow(modelPageSettings.getData().CAL_SETSINGLEROW);
+
+}});
+itemSettingsStart.addContent(inCalStart); 
+ var itemSettingsLegend = new sap.m.InputListItem("itemSettingsLegend",{label: "Vis Forklaring"});
+ListSettingsCalendar.addItem(itemSettingsLegend); 
+ var inCalLegend = new sap.m.Switch("inCalLegend",{customTextOff:"No",customTextOn:"Yes",state:"{/CAL_SHOWLEGEND}",change: function(oEvent) {
+setCacheSettings();
+
+CalendarLegend.setVisible(modelPageSettings.getData().CAL_SHOWLEGEND);
+
+}});
+itemSettingsLegend.addContent(inCalLegend); 
+ var FooterSettings = new sap.m.Bar("FooterSettings",{});
+PageSettings.setFooter(FooterSettings); 
+ var backSettings = new sap.m.Button("backSettings",{type:"Back",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterSettings.addContentLeft(backSettings); 
+ var PageSearchCC = new sap.m.Page("PageSearchCC",{title:"Kostnadssted"});
+App.addPage(PageSearchCC);
+var modelPageSearchCC = new sap.ui.model.json.JSONModel();
+PageSearchCC.setModel(modelPageSearchCC); 
+ var ListSearchCC = new sap.m.List("ListSearchCC",{headerText: "Filter",showNoData:false});
+PageSearchCC.addContent(ListSearchCC); 
+ var SearchCC = new sap.m.SearchField("SearchCC",{value:"{/SEARCH}",width:"100%",search: function(oEvent) {
+// Set Busy
+PageSearchCC.setBusyIndicatorDelay(0);
+PageSearchCC.setBusy(true);
+
+
+// Do Search
+getOnlineListCC();
+}});
+PageSearchCC.addContent(SearchCC); 
+ var ListCC = new sap.m.List("ListCC",{headerText: "Liste",showNoData:false});
+PageSearchCC.addContent(ListCC);
+var modelListCC = new sap.ui.model.json.JSONModel();
+ListCC.setModel(modelListCC); 
+ var ItemCC = new sap.m.StandardListItem("ItemCC",{description:"{COSTCENTER}",title:"{COCNTR_TXT}",type:"Navigation",press: function(oEvent) {
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+var data = modelPageEntry.getData();
+data.REC_CCTR = context.getProperty("COSTCENTER");
+data.COCNTR_TXT = context.getProperty("COCNTR_TXT");
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Navigate
+App.backToPage("PageEntry");
+
+// Update Detail Icon
+updateDetailIcon();
+}});
+ListCC.bindAggregation("items", "/",ItemCC); 
+ var FooterSearchCC = new sap.m.Bar("FooterSearchCC",{});
+PageSearchCC.setFooter(FooterSearchCC); 
+ var backSearchCC = new sap.m.Button("backSearchCC",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterSearchCC.addContentLeft(backSearchCC); 
+ var homeSearchCC = new sap.m.Button("homeSearchCC",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterSearchCC.addContentRight(homeSearchCC); 
+ var PageSearchWBS = new sap.m.Page("PageSearchWBS",{title:"WBS"});
+App.addPage(PageSearchWBS);
+var modelPageSearchWBS = new sap.ui.model.json.JSONModel();
+PageSearchWBS.setModel(modelPageSearchWBS); 
+ var ListSearchWBS = new sap.m.List("ListSearchWBS",{headerText: "Filter",showNoData:false});
+PageSearchWBS.addContent(ListSearchWBS); 
+ var SearchWBS = new sap.m.SearchField("SearchWBS",{value:"{/SEARCH}",width:"100%",search: function(oEvent) {
+// Set Busy
+PageSearchWBS.setBusyIndicatorDelay(0);
+PageSearchWBS.setBusy(true);
+
+
+// Do Search
+getOnlineListWBS();
+}});
+PageSearchWBS.addContent(SearchWBS); 
+ var ListWBS = new sap.m.List("ListWBS",{headerText: "Liste",showNoData:false});
+PageSearchWBS.addContent(ListWBS);
+var modelListWBS = new sap.ui.model.json.JSONModel();
+ListWBS.setModel(modelListWBS); 
+ var ItemWBS = new sap.m.StandardListItem("ItemWBS",{type:"Navigation",title:"{POST1}",description:"{POSID}",press: function(oEvent) {
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+var data = modelPageEntry.getData();
+data.WBS_ELEMENT = context.getProperty("POSID");
+data.WBS_TXT = context.getProperty("POST1");
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Navigate
+App.backToPage("PageEntry");
+
+// Update Detail Icon
+updateDetailIcon();
+}});
+ListWBS.bindAggregation("items", "/",ItemWBS); 
+ var FooterSearchWBS = new sap.m.Bar("FooterSearchWBS",{});
+PageSearchWBS.setFooter(FooterSearchWBS); 
+ var backSearchWBS = new sap.m.Button("backSearchWBS",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterSearchWBS.addContentLeft(backSearchWBS); 
+ var homeSearchWBS = new sap.m.Button("homeSearchWBS",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterSearchWBS.addContentRight(homeSearchWBS); 
+ var PageSearchNetwork = new sap.m.Page("PageSearchNetwork",{title:"Nettvek"});
+App.addPage(PageSearchNetwork);
+var modelPageSearchNetwork = new sap.ui.model.json.JSONModel();
+PageSearchNetwork.setModel(modelPageSearchNetwork); 
+ var ListSearchNetwork = new sap.m.List("ListSearchNetwork",{headerText: "Filter",showNoData:false});
+PageSearchNetwork.addContent(ListSearchNetwork); 
+ var SearchNetwork = new sap.m.SearchField("SearchNetwork",{width:"100%",value:"{/SEARCH}",search: function(oEvent) {
+// Set Busy
+PageSearchNetwork.setBusyIndicatorDelay(0);
+PageSearchNetwork.setBusy(true);
+
+
+// Do Search
+getOnlineListNetwork();
+}});
+PageSearchNetwork.addContent(SearchNetwork); 
+ var ListNetwork = new sap.m.List("ListNetwork",{headerText: "Liste",showNoData:false});
+PageSearchNetwork.addContent(ListNetwork);
+var modelListNetwork = new sap.ui.model.json.JSONModel();
+ListNetwork.setModel(modelListNetwork); 
+ var ItemNetwork = new sap.m.StandardListItem("ItemNetwork",{description:"{NETWORK}",title:"{SHORT_TEXT}",type:"Navigation",press: function(oEvent) {
+
+// Set Busy
+PageSearchNetwork.setBusyIndicatorDelay(0);
+PageSearchNetwork.setBusy(true);
+
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+var value = context.getProperty("NETWORK");
+
+// Update Data
+var data = modelPageEntry.getData();
+data.NETWORK = context.getProperty("NETWORK");
+data.NETWORK_TXT = context.getProperty("SHORT_TEXT");
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Get Operation
+getOnlineListOperation(value);
+
+
+}});
+ListNetwork.bindAggregation("items", "/",ItemNetwork); 
+ var FooterSearchNetwork = new sap.m.Bar("FooterSearchNetwork",{});
+PageSearchNetwork.setFooter(FooterSearchNetwork); 
+ var backSearchNetwork = new sap.m.Button("backSearchNetwork",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterSearchNetwork.addContentLeft(backSearchNetwork); 
+ var homeSearchNetwork = new sap.m.Button("homeSearchNetwork",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterSearchNetwork.addContentRight(homeSearchNetwork); 
+ var PageSearchOperation = new sap.m.Page("PageSearchOperation",{title:"Nettverks Aktivitet"});
+App.addPage(PageSearchOperation);
+var modelPageSearchOperation = new sap.ui.model.json.JSONModel();
+PageSearchOperation.setModel(modelPageSearchOperation); 
+ var ListOperation = new sap.m.List("ListOperation",{headerText: "List",showNoData:false});
+PageSearchOperation.addContent(ListOperation);
+var modelListOperation = new sap.ui.model.json.JSONModel();
+ListOperation.setModel(modelListOperation); 
+ var ItemOperation = new sap.m.StandardListItem("ItemOperation",{type:"Navigation",title:"{DESCRIPTION}",description:"{AVTIVITY}",press: function(oEvent) {
+
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+var data = modelPageEntry.getData();
+data.AVTIVITY = context.getProperty("AVTIVITY");
+data.AVTIVITY_TXT = context.getProperty("DESCRIPTION");
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Navigate
+App.backToPage("PageEntry");
+
+// Update Detail Icon
+updateDetailIcon();
+}});
+ListOperation.bindAggregation("items", "/",ItemOperation); 
+ var FooterSearchOperation = new sap.m.Bar("FooterSearchOperation",{});
+PageSearchOperation.setFooter(FooterSearchOperation); 
+ var backSearchOperation = new sap.m.Button("backSearchOperation",{type:"Back",tap: function(oEvent) {App.backToPage("PageSearchNetwork");(oEvent);}});
+FooterSearchOperation.addContentLeft(backSearchOperation); 
+ var homeSearchOperation = new sap.m.Button("homeSearchOperation",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterSearchOperation.addContentRight(homeSearchOperation); 
+ var PageSearchiOrder = new sap.m.Page("PageSearchiOrder",{title:"Intern Ordre"});
+App.addPage(PageSearchiOrder);
+var modelPageSearchiOrder = new sap.ui.model.json.JSONModel();
+PageSearchiOrder.setModel(modelPageSearchiOrder); 
+ var ListSearchiOrder = new sap.m.List("ListSearchiOrder",{headerText: "Filter",showNoData:false});
+PageSearchiOrder.addContent(ListSearchiOrder); 
+ var SearchiOrder = new sap.m.SearchField("SearchiOrder",{value:"{/SEARCH}",width:"100%",search: function(oEvent) {
+// Set Busy
+PageSearchiOrder.setBusyIndicatorDelay(0);
+PageSearchiOrder.setBusy(true);
+
+
+// Do Search
+getOnlineListiOrder();
+}});
+PageSearchiOrder.addContent(SearchiOrder); 
+ var ListiOrder = new sap.m.List("ListiOrder",{headerText: "Liste",showNoData:false});
+PageSearchiOrder.addContent(ListiOrder);
+var modelListiOrder = new sap.ui.model.json.JSONModel();
+ListiOrder.setModel(modelListiOrder); 
+ var ItemiOrder = new sap.m.StandardListItem("ItemiOrder",{description:"{AUFNR}",title:"{KTEXT}",type:"Navigation",press: function(oEvent) {
+// Get Context
+var context = oEvent.oSource.getBindingContext();
+
+// Update Data
+var data = modelPageEntry.getData();
+data.REC_ORDER = context.getProperty("AUFNR");
+data.IORDER_TXT = context.getProperty("KTEXT");
+
+// Update Model
+modelPageEntry.setData(data);
+
+// Navigate
+App.backToPage("PageEntry");
+
+// Update Detail Icon
+updateDetailIcon();
+}});
+ListiOrder.bindAggregation("items", "/",ItemiOrder); 
+ var FooterSearchiOrder = new sap.m.Bar("FooterSearchiOrder",{});
+PageSearchiOrder.setFooter(FooterSearchiOrder); 
+ var backSearchiOrder = new sap.m.Button("backSearchiOrder",{type:"Back",tap: function(oEvent) {App.backToPage("PageEntry");(oEvent);}});
+FooterSearchiOrder.addContentLeft(backSearchiOrder); 
+ var homeSearchiOrder = new sap.m.Button("homeSearchiOrder",{icon:"sap-icon://home",tap: function(oEvent) {App.backToPage("PageCalendar");(oEvent);}});
+FooterSearchiOrder.addContentRight(homeSearchiOrder);
+// Trigger Calender filter
+setTimeout(function()
+{
+    Calendar.fireTapOnDate();
+    ListHours.setVisible(true);
+
+    if (modelPageSettings.getData().CAL_FIRSTDAYOFFSET)
+    {
+        Calendar.setFirstDayOffset(parseInt(modelPageSettings.getData().CAL_FIRSTDAYOFFSET));
+    }
+
+    Calendar.setSingleRow(modelPageSettings.getData().CAL_SETSINGLEROW);
+
+    if (modelPageSettings.getData().CAL_SHOWLEGEND)
+    {
+        CalendarLegend.setVisible(modelPageSettings.getData().CAL_SHOWLEGEND);
+    }
+    else
+    {
+        CalendarLegend.setVisible(true);
+    }
+
+}
+,50);
+
+function setCacheSettings()
+{
+    $.sap.require("jquery.sap.storage");
+    var PageSettingsStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+    PageSettingsStorage.remove("ZDFO_UI5_PORTAL_PageSettings");
+    PageSettingsStorage.put("ZDFO_UI5_PORTAL_PageSettings",modelPageSettings.getData());
+}
+
+function updateDetailIcon()
+{
+
+    setTimeout(function()
+    {
+        var img = document.getElementById("ItemEntryAct-imgDet");
+        img.setAttribute("data-sap-ui-icon-content","");
+
+        var img = document.getElementById("ItemEntryWBS-imgDet");
+        img.setAttribute("data-sap-ui-icon-content","");
+
+        var img = document.getElementById("ItemEntryCC-imgDet");
+        img.setAttribute("data-sap-ui-icon-content","");
+
+        var img = document.getElementById("ItemEntryNetwork-imgDet");
+        img.setAttribute("data-sap-ui-icon-content","");
+
+        var img = document.getElementById("ItemEntryiOrder-imgDet");
+        img.setAttribute("data-sap-ui-icon-content","");
+
+    }
+    ,10);
+
+} 
+ var PageList = new sap.m.Page("PageList",{title:"Mine Reiseregninger"});
+App.addPage(PageList);
+var modelPageList = new sap.ui.model.json.JSONModel();
+PageList.setModel(modelPageList); 
+ var updatelistTrip = new sap.m.PullToRefresh("updatelistTrip",{refresh: function(oEvent) {getOnlinelistTrip();}});
+PageList.addContent(updatelistTrip); 
+ var headerList = new sap.m.Bar("headerList",{});
+PageList.setCustomHeader(headerList); 
+ var backPageList = new sap.m.Button("backPageList",{type:"Back",tap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+headerList.addContentLeft(backPageList); 
+ var BusyList = new sap.m.BusyIndicator("BusyList",{visible:false});
+headerList.addContentLeft(BusyList); 
+ var txtListHead = new sap.m.Text("txtListHead",{text:"Mine Reiseregninger"});
+headerList.addContentMiddle(txtListHead); 
+ var butList = new sap.m.Button("butList",{icon:"sap-icon://add",tap: function(oEvent) {getOnlinePageDetail("NEW");(oEvent);}});
+headerList.addContentRight(butList); 
+ var filterTrip = new sap.m.IconTabBar("filterTrip",{select: function(oEvent) {
+var binding = listTrip.getBinding("items");
+var selected = oEvent.getParameter("selectedKey");
+
+if (selected == "ALL")
+{
+    binding.filter([]);
+}
+else
+{
+    var filter = new sap.ui.model.Filter("ABREC_TXT", "EQ", selected);
+    binding.filter([filter]);
+}
+
+}});
+PageList.addContent(filterTrip); 
+ var All = new sap.m.IconTabFilter("All",{text:"Reiser",showAll:true,key:"ALL",count:"{/COUNT_ALL}"});
+filterTrip.addItem(All); 
+ var Sep1 = new sap.m.IconTabSeparator("Sep1",{});
+filterTrip.addItem(Sep1); 
+ var FilterOpen = new sap.m.IconTabFilter("FilterOpen",{count:"{/COUNT_APPROVED}",icon:"sap-icon://sys-enter",iconColor:sap.ui.core.IconColor.Default,key:"Open",text:"Åpne"});
+filterTrip.addItem(FilterOpen); 
+ var FilterCompleted = new sap.m.IconTabFilter("FilterCompleted",{text:"Til Godkjenning",key:"To Be Settled",iconColor:sap.ui.core.IconColor.Positive,icon:"sap-icon://locked",count:"{/COUNT_COMPLETED}"});
+filterTrip.addItem(FilterCompleted); 
+ var FilterCanceled = new sap.m.IconTabFilter("FilterCanceled",{count:"{/COUNT_REJECTED}",icon:"sap-icon://sys-cancel",iconColor:sap.ui.core.IconColor.Critical,key:"Canceled",text:"Avviste"});
+filterTrip.addItem(FilterCanceled); 
+ var listTrip = new sap.m.List("listTrip",{headerText: "Mine Reiseregninger"});
+PageList.addContent(listTrip);
+var modellistTrip = new sap.ui.model.json.JSONModel();
+listTrip.setModel(modellistTrip); 
+ var itemTrip3 = new sap.m.ObjectListItem("itemTrip3",{intro:"{DATV1}",title:"{ABREC_TXT}",type:"Navigation",tap: function(oEvent) {
+
+//Show spinner
+BusyList.setVisible(true);
+
+//Get Selected Row
+var context = oEvent.oSource.getBindingContext();
+var value = context.getProperty("REINR");
+
+getOnlinePageDetail(value);
+
+
+}});
+listTrip.bindAggregation("items", "/",itemTrip3); 
+ var itemZort1 = new sap.m.ObjectAttribute("itemZort1",{text:"{ZORT1}"});
+itemTrip3.addAttribute(itemZort1); 
+ var itemKunde = new sap.m.ObjectAttribute("itemKunde",{text:"{KUNDE}"});
+itemTrip3.addAttribute(itemKunde); 
+ var itemNumber = new sap.m.ObjectStatus("itemNumber",{icon:"{ICON}",state:"{STATUS}",text:"{REINR}"});
+itemTrip3.setFirstStatus(itemNumber); 
+ var footerPageList = new sap.m.Bar("footerPageList",{});
+PageList.setFooter(footerPageList); 
+ var PageDetail = new sap.m.Page("PageDetail",{title:"Mine Reiseregninger"});
+App.addPage(PageDetail);
+var modelPageDetail = new sap.ui.model.json.JSONModel();
+PageDetail.setModel(modelPageDetail); 
+ var headerDetail = new sap.m.Bar("headerDetail",{});
+PageDetail.setCustomHeader(headerDetail); 
+ var butBackDetail = new sap.m.Button("butBackDetail",{icon:"sap-icon://nav-back",tap: function(oEvent) {App.back(); getOnlinelistTrip();}});
+headerDetail.addContentLeft(butBackDetail); 
+ var txtDetailHead = new sap.m.Text("txtDetailHead",{text:"Ny Reiseutgift"});
+headerDetail.addContentMiddle(txtDetailHead); 
+ var listStatus = new sap.m.List("listStatus",{showNoData:false});
+PageDetail.addContent(listStatus);
+var modellistStatus = new sap.ui.model.json.JSONModel();
+listStatus.setModel(modellistStatus); 
+ var itmStatus = new sap.m.StandardListItem("itmStatus",{info:"{MESSAGE}",infoState:"{PARAMETER}"});
+listStatus.bindAggregation("items", "/",itmStatus); 
+ var tabTravel = new sap.me.TabContainer("tabTravel",{badgeAttachments:"{/COUNT_RECEIPT}",badgeNotes:"{/COUNT_COMMENT}",badgePeople:"{/COUNT_MILEAGE}",expandable:false});
+PageDetail.addContent(tabTravel); 
+ var listTop = new sap.m.List("listTop",{});
+tabTravel.setContentInfo(listTop); 
+ var itemReinr = new sap.m.ObjectListItem("itemReinr",{intro:"Referanse",title:"{/REINR}"});
+listTop.addItem(itemReinr); 
+ var itemDeparture = new sap.m.InputListItem("itemDeparture",{label: "Reise Start"});
+listTop.addItem(itemDeparture); 
+ var inDeparture = new sap.m.DateTimeInput("inDeparture",{value:"{/DEP_DATE}",valueFormat:"yyyyMMdd",change: function(oEvent) {
+inArrival.setValue(inDeparture.getValue());
+}});
+itemDeparture.addContent(inDeparture); 
+ var itemArrival = new sap.m.InputListItem("itemArrival",{label: "Reise Slutt"});
+listTop.addItem(itemArrival); 
+ var inArrival = new sap.m.DateTimeInput("inArrival",{value:"{/ARR_DATE}",valueFormat:"yyyyMMdd"});
+itemArrival.addContent(inArrival); 
+ var itemLocation = new sap.m.InputListItem("itemLocation",{label: "Sted"});
+listTop.addItem(itemLocation); 
+ var inLocation = new sap.m.Input("inLocation",{value:"{/LOCATION}"});
+itemLocation.addContent(inLocation); 
+ var itemReason = new sap.m.InputListItem("itemReason",{label: "Årsak"});
+listTop.addItem(itemReason); 
+ var inReason = new sap.m.Input("inReason",{value:"{/CUSTOMER}"});
+itemReason.addContent(inReason); 
+ var itemCountry = new sap.m.InputListItem("itemCountry",{label: "Land"});
+listTop.addItem(itemCountry); 
+ var inCountry = new sap.m.Select("inCountry",{title:"Land",selectedKey:"{/COUNTRY}"});
+itemCountry.addContent(inCountry); 
+ var grpReimbursement = new sap.m.GroupHeaderListItem("grpReimbursement",{title: "Refusjon"});
+listTop.addItem(grpReimbursement); 
+ var itemReinbursement1 = new sap.m.InputListItem("itemReinbursement1",{label: "Måltider"});
+listTop.addItem(itemReinbursement1); 
+ var inMeals = new sap.m.CheckBox("inMeals",{selected:"{/SELECT_MEALS}"});
+itemReinbursement1.addContent(inMeals); 
+ var grpStatus = new sap.m.GroupHeaderListItem("grpStatus",{title: "Status"});
+listTop.addItem(grpStatus); 
+ var itemStatusDraft = new sap.m.InputListItem("itemStatusDraft",{label: "Kladd"});
+listTop.addItem(itemStatusDraft); 
+ var statDraft = new sap.m.RadioButton("statDraft",{groupName:"Status",selected:"{/SELECT_DRAFT}",textDirection:sap.ui.core.TextDirection.RTL});
+itemStatusDraft.addContent(statDraft); 
+ var itemStatusSent = new sap.m.InputListItem("itemStatusSent",{label: "Send til godkjenning"});
+listTop.addItem(itemStatusSent); 
+ var statSent = new sap.m.RadioButton("statSent",{groupName:"Status",selected:"{/SELECT_APPROVED}"});
+itemStatusSent.addContent(statSent); 
+ var boxReceipts = new sap.m.VBox("boxReceipts",{});
+tabTravel.setContentAttachments(boxReceipts);
+var modelboxReceipts = new sap.ui.model.json.JSONModel();
+boxReceipts.setModel(modelboxReceipts); 
+ var inputReceipts = new sap.m.List("inputReceipts",{headerText: "Kvitteringer"});
+boxReceipts.addItem(inputReceipts); 
+ var itemImage = new sap.m.ObjectListItem("itemImage",{visible:"{/IMAGEVISIBLE}",type:sap.m.ListType.Navigation,icon:"{/IMAGESRC}",tap: function(oEvent) {
+
+//Set Image Source
+cameraImage.setSrc(itemImage.getIcon());
+
+//Navigate
+App.to("PageImage");
+}});
+inputReceipts.addItem(itemImage); 
+ var itemAmount = new sap.m.InputListItem("itemAmount",{label: "Beløp"});
+inputReceipts.addItem(itemAmount); 
+ var inAmount = new sap.m.Input("inAmount",{type:"Number",value:"{/REC_AMOUNT}"});
+itemAmount.addContent(inAmount); 
+ var itemCurrency = new sap.m.InputListItem("itemCurrency",{label: "Valuta"});
+inputReceipts.addItem(itemCurrency); 
+ var inCurrency = new sap.m.Select("inCurrency",{title:"Valuta",selectedKey:"{/REC_CURR}"});
+itemCurrency.addContent(inCurrency); 
+ var curNOK = new sap.ui.core.Item("curNOK",{key:"NOK",text:"NOK"});
+inCurrency.addItem(curNOK); 
+ var curEUR = new sap.ui.core.Item("curEUR",{key:"EUR",text:"EUR"});
+inCurrency.addItem(curEUR); 
+ var curUSD = new sap.ui.core.Item("curUSD",{text:"USD",key:"USD"});
+inCurrency.addItem(curUSD); 
+ var itemExpenceType = new sap.m.InputListItem("itemExpenceType",{label: "Utgiftstype"});
+inputReceipts.addItem(itemExpenceType); 
+ var inExpenseType = new sap.m.Select("inExpenseType",{title:"Utgiftstype",selectedKey:"{/EXP_TYPE}"});
+itemExpenceType.addContent(inExpenseType); 
+ var itemRecDate = new sap.m.InputListItem("itemRecDate",{label: "Dato"});
+inputReceipts.addItem(itemRecDate); 
+ var inRecDate = new sap.m.DateTimeInput("inRecDate",{value:"{/REC_DATE}",valueFormat:"yyyyMMdd"});
+itemRecDate.addContent(inRecDate); 
+ var itemRecInfo = new sap.m.InputListItem("itemRecInfo",{label: "Informasjon"});
+inputReceipts.addItem(itemRecInfo); 
+ var inRecInfo = new sap.m.Input("inRecInfo",{value:"{/SHORTTXT}"});
+itemRecInfo.addContent(inRecInfo); 
+ var barReceipts = new sap.m.Bar("barReceipts",{});
+boxReceipts.addItem(barReceipts); 
+ var butAddReceipts = new sap.m.Button("butAddReceipts",{text:"Oppdater",tap: function(oEvent) {getOnlineboxReceipts("SAVE");(oEvent);}});
+barReceipts.addContentMiddle(butAddReceipts); 
+ var butClearReceipts = new sap.m.Button("butClearReceipts",{text:"Nullstill",tap: function(oEvent) {getOnlineboxReceipts("CLEAR");(oEvent);}});
+barReceipts.addContentMiddle(butClearReceipts); 
+ var butCamera = new sap.m.Button("butCamera",{text:"Kamera",tap: function(oEvent) {capturePhoto();}});
+barReceipts.addContentMiddle(butCamera); 
+ var butDelReceipts = new sap.m.Button("butDelReceipts",{text:"Slett",tap: function(oEvent) {getOnlineboxReceipts("DELETE");(oEvent);}});
+barReceipts.addContentMiddle(butDelReceipts); 
+ var listReceipts = new sap.m.List("listReceipts",{headerText: "Oversikt kvitteringer"});
+boxReceipts.addItem(listReceipts);
+var modellistReceipts = new sap.ui.model.json.JSONModel();
+listReceipts.setModel(modellistReceipts); 
+ var itemReceipts = new sap.m.StandardListItem("itemReceipts",{type:sap.m.ListType.Navigation,title:"{REC_DATE}",description:"{SHORTTXT}",counter:"{REC_AMOUNT}",tap: function(oEvent) {
+
+var context = oEvent.oSource.getBindingContext();
+var value = context.getProperty("RECEIPTNO");
+
+getOnlineboxReceipts(value);
+}});
+listReceipts.bindAggregation("items", "/",itemReceipts); 
+ var cameraData = new sap.m.TextArea("cameraData",{value:"{/IMAGEDATA}",visible:false});
+boxReceipts.addItem(cameraData); 
+ var boxComment = new sap.m.VBox("boxComment",{});
+tabTravel.setContentNotes(boxComment); 
+ var listComment = new sap.m.List("listComment",{headerText: "Kommentar",showNoData:false});
+boxComment.addItem(listComment); 
+ var inComment = new sap.m.TextArea("inComment",{rows:10,value:"{/COMMENT}",width:"100%"});
+boxComment.addItem(inComment); 
+ var boxMileage = new sap.m.VBox("boxMileage",{});
+tabTravel.setContentPeople(boxMileage);
+var modelboxMileage = new sap.ui.model.json.JSONModel();
+boxMileage.setModel(modelboxMileage); 
+ var inputMileage = new sap.m.List("inputMileage",{headerText: "Kjøregodtgjørelse"});
+boxMileage.addItem(inputMileage); 
+ var itemStartLocation = new sap.m.InputListItem("itemStartLocation",{label: "Sted for avreise"});
+inputMileage.addItem(itemStartLocation); 
+ var inStartLocation = new sap.m.Input("inStartLocation",{value:"{/LOC_FROM}"});
+itemStartLocation.addContent(inStartLocation); 
+ var itemEndLocation = new sap.m.InputListItem("itemEndLocation",{label: "Sted for ankomst"});
+inputMileage.addItem(itemEndLocation); 
+ var inEndLocation = new sap.m.Input("inEndLocation",{value:"{/LOC_TO}"});
+itemEndLocation.addContent(inEndLocation); 
+ var itemDistance = new sap.m.InputListItem("itemDistance",{label: "Avstand(km)"});
+inputMileage.addItem(itemDistance); 
+ var inDistance = new sap.m.Input("inDistance",{value:"{/M_TOTAL}",type:sap.m.InputType.Number});
+itemDistance.addContent(inDistance); 
+ var itemMilDate = new sap.m.InputListItem("itemMilDate",{label: "Dato"});
+inputMileage.addItem(itemMilDate); 
+ var inMilDate = new sap.m.DateTimeInput("inMilDate",{value:"{/MIL_DATE}",valueFormat:"yyyyMMdd"});
+itemMilDate.addContent(inMilDate); 
+ var barMilage = new sap.m.Bar("barMilage",{});
+boxMileage.addItem(barMilage); 
+ var butAddMileage = new sap.m.Button("butAddMileage",{text:"Oppdater",tap: function(oEvent) {
+
+//Trigger SAVE
+getOnlineboxMileage("SAVE");
+
+//Set Google Map Hidden
+$("#GoogleMap").css("height","0px");
+
+
+}});
+barMilage.addContentMiddle(butAddMileage); 
+ var butClearMileage = new sap.m.Button("butClearMileage",{text:"Nullstill",tap: function(oEvent) {
+getOnlineboxMileage("CLEAR");
+
+//Set Google Map Hidden
+$("#GoogleMap").css("height","0px");
+}});
+barMilage.addContentMiddle(butClearMileage); 
+ var butCalcMileage = new sap.m.Button("butCalcMileage",{text:"Kalkuler",tap: function(oEvent) {
+// Calculate Distance with Google
+
+var directionsDisplay = new google.maps.DirectionsRenderer();
+var directionsService = new google.maps.DirectionsService();
+
+var start = inStartLocation.getValue();
+var end = inEndLocation.getValue();
+
+//Check for Empty Fields Start/End
+if (!start.length)
+{
+    return;
+}
+
+if (!end.length)
+{
+    return;
+}
+
+//Set Google Map Visible
+$("#GoogleMap").css("height","250px");
+
+//Process Google Request
+var request =
+{
+    origin:start,
+    destination:end,
+    travelMode: google.maps.TravelMode.DRIVING
+}
+;
+
+directionsService.route(request, function(result, status)
+{
+    if (status == google.maps.DirectionsStatus.OK)
+    {
+        directionsDisplay.setDirections(result);
+        computeTotalDistance(directionsDisplay.directions);
+    }
+}
+);
+
+
+var mapOptions =
+{
+    zoom: 7,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+}
+;
+
+googleMap = new google.maps.Map(document.getElementById("GoogleMap"), mapOptions);
+directionsDisplay.setMap(googleMap);
+
+
+function computeTotalDistance(result)
+{
+    var total = 0;
+    var myroute = result.routes[0];
+    for (i = 0; i < myroute.legs.length; i++)
+    {
+        total += myroute.legs[i].distance.value;
+    }
+    total = total / 1000.
+    var totkm = total.toFixed();
+    inDistance.setValue(totkm);
+}
+}});
+barMilage.addContentMiddle(butCalcMileage); 
+ var butDelMileage = new sap.m.Button("butDelMileage",{text:"Slett",tap: function(oEvent) {
+
+//Trigger DELETE
+getOnlineboxMileage("DELETE");
+
+//Set Google Map Hidden
+$("#GoogleMap").css("height","0px");
+
+
+}});
+barMilage.addContentMiddle(butDelMileage); 
+ var HTMLContainer = new sap.ui.core.HTML("HTMLContainer",{content:"<div id='GoogleMap' style='height:0;width:100%;'></div>"});
+boxMileage.addItem(HTMLContainer); 
+ var listMileage = new sap.m.List("listMileage",{headerText: "Oversikt kjøregodtgjørelse"});
+boxMileage.addItem(listMileage);
+var modellistMileage = new sap.ui.model.json.JSONModel();
+listMileage.setModel(modellistMileage); 
+ var itemMileage = new sap.m.ObjectListItem("itemMileage",{counter:"{M_TOTAL}",title:"{MIL_DATE}",type:sap.m.ListType.Navigation,tap: function(oEvent) {
+
+var context = oEvent.oSource.getBindingContext();
+var value = context.getProperty("KEY_MILE");
+
+getOnlineboxMileage(value);
+
+}});
+listMileage.bindAggregation("items", "/",itemMileage); 
+ var itemMilFrom = new sap.m.ObjectAttribute("itemMilFrom",{text:"{LOC_FROM}"});
+itemMileage.addAttribute(itemMilFrom); 
+ var itemMilTo = new sap.m.ObjectAttribute("itemMilTo",{text:"{LOC_TO}"});
+itemMileage.addAttribute(itemMilTo); 
+ var footerPageDetail = new sap.m.Bar("footerPageDetail",{});
+PageDetail.setFooter(footerPageDetail); 
+ var butSaveTrip = new sap.m.Button("butSaveTrip",{text:"Lagre",tap: function(oEvent) {getOnlineSaveTravelExpense();}});
+footerPageDetail.addContentRight(butSaveTrip); 
+ var PageImage = new sap.m.Page("PageImage",{title:"Mine Reiseutgifter"});
+App.addPage(PageImage); 
+ var headerImage = new sap.m.Bar("headerImage",{});
+PageImage.setCustomHeader(headerImage); 
+ var butBackImage = new sap.m.Button("butBackImage",{icon:"sap-icon://nav-back",tap: function(oEvent) {App.back();}});
+headerImage.addContentLeft(butBackImage); 
+ var txtImageHead = new sap.m.Text("txtImageHead",{text:"Mine Reiseutgifter"});
+headerImage.addContentMiddle(txtImageHead); 
+ var cameraImage = new sap.m.Image("cameraImage",{width:"100%"});
+PageImage.addContent(cameraImage); 
+ var footerPageImage = new sap.m.Bar("footerPageImage",{});
+PageImage.setFooter(footerPageImage); 
+ var Home = new sap.m.Page("Home",{title:"Employee Lookup"});
+App.addPage(Home); 
+ var updateHome = new sap.m.PullToRefresh("updateHome",{refresh: function(oEvent) {getOnlinelistFav();}});
+Home.addContent(updateHome); 
+ var headerHome = new sap.m.Bar("headerHome",{});
+Home.setCustomHeader(headerHome); 
+ var backHomeList = new sap.m.Button("backHomeList",{type:"Back",tap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+headerHome.addContentLeft(backHomeList); 
+ var BusyHome = new sap.m.BusyIndicator("BusyHome",{visible:false});
+headerHome.addContentLeft(BusyHome); 
+ var txtHome = new sap.m.Text("txtHome",{text:"Employee Lookup"});
+headerHome.addContentMiddle(txtHome); 
+ var listFav = new sap.m.List("listFav",{headerText: "My Favourites"});
+Home.addContent(listFav);
+var modellistFav = new sap.ui.model.json.JSONModel();
+listFav.setModel(modellistFav); 
+ var itmHomeFav = new sap.m.StandardListItem("itmHomeFav",{description:"{JOB_TEXT}",icon:"{IMAGE}",title:"{ENAME}",type:"Navigation",tap: function(oEvent) {
+// Get Selected Item
+var context = oEvent.oSource.getBindingContext();
+var selected = context.getProperty("PERNR");
+
+// Set Spinner
+BusyHome.setVisible(true);
+
+// Update Detail Page
+getOnlinePageInfo(selected);
+}});
+listFav.bindAggregation("items", "/",itmHomeFav); 
+ var homeFooter = new sap.m.Bar("homeFooter",{});
+Home.setFooter(homeFooter); 
+ var goHome = new sap.m.Button("goHome",{icon:"sap-icon://favorite",tap: function(oEvent) {App.to("Home","show");(oEvent);}});
+homeFooter.addContentMiddle(goHome); 
+ var goHomeDepartment = new sap.m.Button("goHomeDepartment",{icon:"sap-icon://collaborate",tap: function(oEvent) {App.to("PageDepartment","show");(oEvent);}});
+homeFooter.addContentMiddle(goHomeDepartment); 
+ var goHomeSearch = new sap.m.Button("goHomeSearch",{icon:"sap-icon://search",tap: function(oEvent) {App.to("PageSearch","show");(oEvent);}});
+homeFooter.addContentMiddle(goHomeSearch); 
+ var PageDepartment = new sap.m.Page("PageDepartment",{title:"Mine kolleger"});
+App.addPage(PageDepartment); 
+ var updateDepartment = new sap.m.PullToRefresh("updateDepartment",{refresh: function(oEvent) {getOnlinelistDepartment();}});
+PageDepartment.addContent(updateDepartment); 
+ var headerDep = new sap.m.Bar("headerDep",{});
+PageDepartment.setCustomHeader(headerDep); 
+ var backDepartmentList = new sap.m.Button("backDepartmentList",{type:"Back",tap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+headerDep.addContentLeft(backDepartmentList); 
+ var BusyDep = new sap.m.BusyIndicator("BusyDep",{visible:false});
+headerDep.addContentLeft(BusyDep); 
+ var txtDep = new sap.m.Text("txtDep",{text:"Employee Lookup"});
+headerDep.addContentMiddle(txtDep); 
+ var listDepartment = new sap.m.List("listDepartment",{headerText: "My Department"});
+PageDepartment.addContent(listDepartment);
+var modellistDepartment = new sap.ui.model.json.JSONModel();
+listDepartment.setModel(modellistDepartment); 
+ var itmDepFav = new sap.m.StandardListItem("itmDepFav",{type:sap.m.ListType.Navigation,title:"{ENAME}",icon:"{IMAGE}",description:"{JOB_TEXT}",tap: function(oEvent) {
+// Get Selected Item
+var context = oEvent.oSource.getBindingContext();
+var selected = context.getProperty("PERNR");
+
+// Set Spinner
+BusyDep.setVisible(true);
+
+// Update Detail Page
+getOnlinePageInfo(selected);
+}});
+listDepartment.bindAggregation("items", "/",itmDepFav); 
+ var depFooter = new sap.m.Bar("depFooter",{});
+PageDepartment.setFooter(depFooter); 
+ var goDepHome = new sap.m.Button("goDepHome",{icon:"sap-icon://favorite",tap: function(oEvent) {App.to("Home","show");(oEvent);}});
+depFooter.addContentMiddle(goDepHome); 
+ var goDepartment = new sap.m.Button("goDepartment",{icon:"sap-icon://collaborate",tap: function(oEvent) {App.to("PageDepartment","show");(oEvent);}});
+depFooter.addContentMiddle(goDepartment); 
+ var goDepSearch = new sap.m.Button("goDepSearch",{icon:"sap-icon://search",tap: function(oEvent) {App.to("PageSearch","show");(oEvent);}});
+depFooter.addContentMiddle(goDepSearch); 
+ var MasterPeople = new sap.m.Page("MasterPeople",{title:"Godkjenn Timer",backgroundDesign:"List",navButtonType:"Back",showNavButton:true,navButtonTap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+App.addPage(MasterPeople); 
+ var Updatepeople = new sap.m.PullToRefresh("Updatepeople",{refresh: function(oEvent) {
+getOnlineListTotal();
+}});
+MasterPeople.addContent(Updatepeople); 
+ var headerPeople = new sap.m.Bar("headerPeople",{});
+MasterPeople.setCustomHeader(headerPeople); 
+ var backPeople = new sap.m.Button("backPeople",{type:"Back",tap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+headerPeople.addContentLeft(backPeople); 
+ var txtPeople = new sap.m.Text("txtPeople",{text:"Timer til Godkjenning"});
+headerPeople.addContentMiddle(txtPeople); 
+ var ListTotal = new sap.m.List("ListTotal",{headerText: "Mine Ansatte"});
+MasterPeople.addContent(ListTotal);
+var modelListTotal = new sap.ui.model.json.JSONModel();
+ListTotal.setModel(modelListTotal); 
+ var itemPeople = new sap.m.ObjectListItem("itemPeople",{intro:"{JOBTXT}",number:"{CATSHOURS}",selected:"{SELECT}",icon:"{ICON}",title:"{NAME}",type:sap.m.ListType.Navigation,tap: function(oEvent) {
+
+BusyCats.setVisible(true);
+
+var context = oEvent.oSource.getBindingContext();
+var value = context.getProperty("PERNR");
+var name = context.getProperty("NAME");
+var job = context.getProperty("JOBTXT");
+var icon = context.getProperty("ICON");
+var number = context.getProperty("CATSHOURS");
+
+// Set Header
+Header.setIntro(job);
+Header.setTitle(name);
+Header.setIcon(icon);
+Header.setNumber(number);
+
+// Get Data
+getOnlineListDetail(value);
+
+
+App.to("PageDetailCats");
+}});
+ListTotal.bindAggregation("items", "/",itemPeople); 
+ var footerPeople = new sap.m.Bar("footerPeople",{});
+MasterPeople.setFooter(footerPeople); 
+ var PageDetailCats = new sap.m.Page("PageDetailCats",{title:"Godkjenn Timeregistrering"});
+App.addPage(PageDetailCats); 
+ var HeaderDetail = new sap.m.Bar("HeaderDetail",{});
+PageDetailCats.setCustomHeader(HeaderDetail); 
+ var back = new sap.m.Button("back",{type:"Back",tap: function(oEvent) {
+App.backToPage("MasterPeople");
+BusyCats.setVisible(false);
+}});
+HeaderDetail.addContentLeft(back); 
+ var BusyCats = new sap.m.BusyIndicator("BusyCats",{});
+HeaderDetail.addContentLeft(BusyCats); 
+ var titleDetail = new sap.m.Text("titleDetail",{text:"Timer til Godkjenning"});
+HeaderDetail.addContentMiddle(titleDetail); 
+ var Header = new sap.m.ObjectHeader("Header",{numberUnit:"Timer"});
+PageDetailCats.addContent(Header); 
+ var ListStatus = new sap.m.List("ListStatus",{showNoData:false});
+PageDetailCats.addContent(ListStatus);
+var modelListStatus = new sap.ui.model.json.JSONModel();
+ListStatus.setModel(modelListStatus); 
+ var ItemStatus = new sap.m.StandardListItem("ItemStatus",{info:"{MESSAGE}",infoState:"{PARAMETER}"});
+ListStatus.bindAggregation("items", "/",ItemStatus); 
+ var ListDetail = new sap.m.List("ListDetail",{headerText: "Detaljer Timeregistrering",includeItemInSelection:true,mode:"MultiSelect",showNoData:false});
+PageDetailCats.addContent(ListDetail);
+var modelListDetail = new sap.ui.model.json.JSONModel();
+ListDetail.setModel(modelListDetail); 
+ var colDate = new sap.m.Column("colDate",{header: new sap.m.Label({text:"Dato"}),width:"100%"});
+ListDetail.addColumn(colDate); 
+ var colHours = new sap.m.Column("colHours",{header: new sap.m.Label({text:"Timer"}),width:"100px"});
+ListDetail.addColumn(colHours); 
+ var colItem = new sap.m.ColumnListItem("colItem",{selected:"{SELECT}"});
+ListDetail.bindAggregation("items", "/",colItem); 
+ var boxDate = new sap.m.VBox("boxDate",{});
+colItem.addCell(boxDate); 
+ var txtDate = new sap.m.Label("txtDate",{text:"{WORKDATE_DIS}"});
+boxDate.addItem(txtDate); 
+ var txtAtt = new sap.m.Label("txtAtt",{text:"{ATEXT}"});
+boxDate.addItem(txtAtt); 
+ var txtHours = new sap.m.Text("txtHours",{text:"{CATSQUANTITY}"});
+colItem.addCell(txtHours); 
+ var footerDetail = new sap.m.Bar("footerDetail",{});
+PageDetailCats.setFooter(footerDetail); 
+ var butApprove = new sap.m.Button("butApprove",{text:"Godkjenn",type:"Accept",tap: function(oEvent) {
+jQuery.sap.require("sap.m.MessageToast");
+sap.m.MessageToast.show("Godkjent");
+
+// Uncommenr to submit
+getOnlineListStatus("APPROVE");
+
+BusyCats.setVisible(false);
+}});
+footerDetail.addContentRight(butApprove); 
+ var butReject = new sap.m.Button("butReject",{text:"Avvis",type:"Reject",tap: function(oEvent) {
+jQuery.sap.require("sap.m.MessageToast");
+sap.m.MessageToast.show("Ikke Godkjent");
+
+// Uncommenr to submit
+getOnlineListStatus("REJECT");
+
+BusyCats.setVisible(false);
+
+}});
+footerDetail.addContentRight(butReject); 
+ var WFInbox = new sap.m.Page("WFInbox",{title:"WF Inbox",backgroundDesign:"List",navButtonType:"Back",showNavButton:true,navButtonTap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+App.addPage(WFInbox); 
+ var UpdateInbox = new sap.m.PullToRefresh("UpdateInbox",{refresh: function(oEvent) {
+getOnlineListInbox();
+}});
+WFInbox.addContent(UpdateInbox); 
+ var headerInbox = new sap.m.Bar("headerInbox",{});
+WFInbox.setCustomHeader(headerInbox); 
+ var backInbox = new sap.m.Button("backInbox",{type:"Back",tap: function(oEvent) {App.backToPage("Menu");(oEvent);}});
+headerInbox.addContentLeft(backInbox); 
+ var txtInbox = new sap.m.Text("txtInbox",{text:"Mine Arbeidsflyter"});
+headerInbox.addContentMiddle(txtInbox); 
+ var ListInbox = new sap.m.List("ListInbox",{headerText: "Oppgaver"});
+WFInbox.addContent(ListInbox);
+var modelListInbox = new sap.ui.model.json.JSONModel();
+ListInbox.setModel(modelListInbox); 
+ var itemInbox = new sap.m.ObjectListItem("itemInbox",{type:sap.m.ListType.Navigation,title:"{WI_TEXT}",selected:true,intro:"{WI_NITEXT}",icon:"sap-icon://product",tap: function(oEvent) {
+
+
+var context = oEvent.oSource.getBindingContext();
+var value = context.getProperty("WI_ID");
+var name = context.getProperty("NAME");
+var job = context.getProperty("JOBTXT");
+var icon = context.getProperty("ICON");
+var number = context.getProperty("CATSHOURS");
+
+// Set Header
+Header.setIntro(job);
+Header.setTitle(name);
+Header.setIcon(icon);
+Header.setNumber(number);
+
+// Get Data
+getOnlineWFform(value);
+
+
+App.to("WFform");
+}});
+ListInbox.bindAggregation("items", "/",itemInbox); 
+ var footerInbox = new sap.m.Bar("footerInbox",{});
+WFInbox.setFooter(footerInbox); 
+ var WFform = new sap.m.Page("WFform",{title:"WF form"});
+App.addPage(WFform);
+var modelWFform = new sap.ui.model.json.JSONModel();
+WFform.setModel(modelWFform); 
+ var HeaderForm = new sap.m.Bar("HeaderForm",{});
+WFform.setCustomHeader(HeaderForm); 
+ var backForm = new sap.m.Button("backForm",{type:"Back",tap: function(oEvent) {
+App.backToPage("WFInbox");
+BusyForm.setVisible(false);
+}});
+HeaderForm.addContentLeft(backForm); 
+ var titleDetail1 = new sap.m.Text("titleDetail1",{text:"Ekstra skattetrekk"});
+HeaderForm.addContentMiddle(titleDetail1); 
+ var tabForm = new sap.me.TabContainer("tabForm",{expandable:false});
+WFform.addContent(tabForm); 
+ var listForm = new sap.m.List("listForm",{});
+tabForm.setContentInfo(listForm); 
+ var itemEmployee = new sap.m.ObjectListItem("itemEmployee",{intro:"Ansatt",title:"{/EMPLOYEE_DESC}"});
+listForm.addItem(itemEmployee); 
+ var itemBetrg = new sap.m.InputListItem("itemBetrg",{label: "Beløp"});
+listForm.addItem(itemBetrg); 
+ var inBetrg = new sap.m.Input("inBetrg",{editable:false,value:"{/BETRG}"});
+itemBetrg.addContent(inBetrg); 
+ var itemMonthFrom = new sap.m.InputListItem("itemMonthFrom",{label: "Fra måned"});
+listForm.addItem(itemMonthFrom); 
+ var fromM = new sap.m.Input("fromM",{editable:false,value:"{/BEG_NAME}"});
+itemMonthFrom.addContent(fromM); 
+ var itemMonthTo = new sap.m.InputListItem("itemMonthTo",{label: "Til måned"});
+listForm.addItem(itemMonthTo); 
+ var toM = new sap.m.Input("toM",{editable:false,value:"{/END_NAME}"});
+itemMonthTo.addContent(toM); 
+ var boxCommentForm = new sap.m.VBox("boxCommentForm",{});
+tabForm.setContentNotes(boxCommentForm); 
+ var listCommentForm = new sap.m.List("listCommentForm",{headerText: "Kommentar",showNoData:false});
+boxCommentForm.addItem(listCommentForm); 
+ var inCommentForm = new sap.m.TextArea("inCommentForm",{width:"100%",visible:false,value:"{/COMMENT}",rows:10});
+boxCommentForm.addItem(inCommentForm); 
+ var footerForm = new sap.m.Bar("footerForm",{});
+WFform.setFooter(footerForm); 
+ var butSendForm = new sap.m.Button("butSendForm",{text:"Send",type:"Accept",visible:false,tap: function(oEvent) {
+jQuery.sap.require("sap.m.MessageToast");
+sap.m.MessageToast.show("Godkjent");
+
+// Uncommenr to submit
+getOnlineListStatus("APPROVE");
+
+BusyCats.setVisible(false);
+}});
+footerForm.addContentRight(butSendForm); 
+ var butApproveForm = new sap.m.Button("butApproveForm",{text:"Godkjenn",type:"Accept",tap: function(oEvent) {
+jQuery.sap.require("sap.m.MessageToast");
+sap.m.MessageToast.show("Godkjent");
+
+// Uncommenr to submit
+getOnlineWFbuttonForm("01");
+
+App.to("WFInbox");
+
+BusyCats.setVisible(false);
+}});
+footerForm.addContentRight(butApproveForm); 
+ var butRejectForm = new sap.m.Button("butRejectForm",{text:"Avvis",type:"Reject",tap: function(oEvent) {
+jQuery.sap.require("sap.m.MessageToast");
+sap.m.MessageToast.show("Ikke Godkjent");
+
+// Uncommenr to submit
+getOnlineListStatus("REJECT");
+
+BusyCats.setVisible(false);
+
+}});
+footerForm.addContentRight(butRejectForm); 
+ var Ekstra = new sap.m.Page("Ekstra",{title:"Ekstra skattetrekk"});
+App.addPage(Ekstra);
+var modelEkstra = new sap.ui.model.json.JSONModel();
+Ekstra.setModel(modelEkstra); 
+ var HeaderIT0014 = new sap.m.Bar("HeaderIT0014",{});
+Ekstra.setCustomHeader(HeaderIT0014); 
+ var backIT0014 = new sap.m.Button("backIT0014",{type:"Back",tap: function(oEvent) {
+App.backToPage("Menu");
+BusyIT0014.setVisible(false);
+}});
+HeaderIT0014.addContentLeft(backIT0014); 
+ var titleIT0014 = new sap.m.Text("titleIT0014",{text:"Ekstra skattetrekk"});
+HeaderIT0014.addContentMiddle(titleIT0014); 
+ var tabIT0014 = new sap.me.TabContainer("tabIT0014",{expandable:false});
+Ekstra.addContent(tabIT0014); 
+ var listIT0014 = new sap.m.List("listIT0014",{});
+tabIT0014.setContentInfo(listIT0014); 
+ var itemEmployeeIT0014 = new sap.m.ObjectListItem("itemEmployeeIT0014",{intro:"Ansatt",title:"{/EMPLOYEE_DESC}"});
+listIT0014.addItem(itemEmployeeIT0014); 
+ var itemBetrgIT0014 = new sap.m.InputListItem("itemBetrgIT0014",{label: "Beløp"});
+listIT0014.addItem(itemBetrgIT0014); 
+ var inBetrgIT0014 = new sap.m.Input("inBetrgIT0014",{value:"{/BETRG}"});
+itemBetrgIT0014.addContent(inBetrgIT0014); 
+ var itemMonthFromIT0014 = new sap.m.InputListItem("itemMonthFromIT0014",{label: "Fra måned"});
+listIT0014.addItem(itemMonthFromIT0014); 
+ var fromMonthIT0014 = new sap.m.Select("fromMonthIT0014",{title:"Fra måned",selectedKey:"{/BEGMND}"});
+itemMonthFromIT0014.addContent(fromMonthIT0014); 
+ var itemMonthToIT0014 = new sap.m.InputListItem("itemMonthToIT0014",{label: "Til måned"});
+listIT0014.addItem(itemMonthToIT0014); 
+ var toMonthIT0014 = new sap.m.Select("toMonthIT0014",{title:"Til måned",selectedKey:"{/ENDMND}"});
+itemMonthToIT0014.addContent(toMonthIT0014); 
+ var boxCommentIT0014 = new sap.m.VBox("boxCommentIT0014",{});
+tabIT0014.setContentNotes(boxCommentIT0014); 
+ var listCommentIT0014 = new sap.m.List("listCommentIT0014",{headerText: "Kommentar",showNoData:false});
+boxCommentIT0014.addItem(listCommentIT0014); 
+ var inCommentIT0014 = new sap.m.TextArea("inCommentIT0014",{rows:10,value:"{/COMMENT}",width:"100%"});
+boxCommentIT0014.addItem(inCommentIT0014); 
+ var footerIT0014 = new sap.m.Bar("footerIT0014",{});
+Ekstra.setFooter(footerIT0014); 
+ var butSendIT0014 = new sap.m.Button("butSendIT0014",{text:"Send",type:"Accept",tap: function(oEvent) {
+jQuery.sap.require("sap.m.MessageToast");
+sap.m.MessageToast.show("Godkjent");
+
+// Uncommenr to submit
+getOnlineWFbutton("01");
+App.to("Menu");
+
+//BusyCats.setVisible(false);
+}});
+footerIT0014.addContentRight(butSendIT0014);
 
 //INIT
 setTimeout(function(){
-$("#myMenu").wijmenu({
-triggerEvent:"click",
-trigger:"settings",
-mode:"flyout",
-orientation:"vertical",
-showAnimation:{duration:1000,animated:"slide"},
-hideAnimation:{duration:1000,animated:"slide"},
-animation:{duration:1000,animated:"slide"}
-});
-
+getOnlineMenu();
+getCachechartHoursData();
+getCachechartAbsData();
+getCacheListFav();
+getCacheListAbsAtt();
+getCacheListAct();
+getCacheListWage();
+getCacheinProfile();
+getOnlinelistTrip();
+getOnlinelistStatus();
+getCacheinCountry();
+getOnlineinExpenseType();
+getOnlinelistFav();
+getOnlinelistDepartment();
+getOnlineListTotal();
+getOnlineListInbox();
+getOnlinefromMonthIT0014();
+getOnlinetoMonthIT0014();
 },10);
+
+//FUNCTIONS
+
+function getOnlineMenu(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=INIT_MENU&ajax_applid=ZDFO_UI5_PORTAL&field_id=00003&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelMenu.setData(data.modelMenuData);
+
+Menu.setBindingContext(modelMenu.getData());
+
+$.sap.require("jquery.sap.storage");
+var MenuStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+MenuStorage.remove("ZDFO_UI5_PORTAL_Menu");
+MenuStorage.put("ZDFO_UI5_PORTAL_Menu",modelMenu.getData());
+
+Menu.setBindingContext(modelMenu.getData());
+
+
+updateMenu.hide();
+}
+});
+}
+function getCacheMenu(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_Menu");
+
+modelMenu.setData(localData);}
+
+function setCacheMenu() {
+$.sap.require("jquery.sap.storage"); var MenuStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+MenuStorage.remove("ZDFO_UI5_PORTAL_Menu");
+MenuStorage.put("ZDFO_UI5_PORTAL_Menu",modelMenu.getData());
+}
+function getOnlinePageCalendar(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00246&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageCalendar.setData(data.modelPageCalendarData);
+
+PageCalendar.setBindingContext(modelPageCalendar.getData());
+
+$.sap.require("jquery.sap.storage");
+var PageCalendarStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+PageCalendarStorage.remove("ZDFO_UI5_PORTAL_PageCalendar");
+PageCalendarStorage.put("ZDFO_UI5_PORTAL_PageCalendar",modelPageCalendar.getData());
+
+PageCalendar.setBindingContext(modelPageCalendar.getData());
+
+
+updateCalendar.hide();
+
+}
+});
+}
+function getCachePageCalendar(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_PageCalendar");
+
+modelPageCalendar.setData(localData);}
+
+function setCachePageCalendar() {
+$.sap.require("jquery.sap.storage"); var PageCalendarStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+PageCalendarStorage.remove("ZDFO_UI5_PORTAL_PageCalendar");
+PageCalendarStorage.put("ZDFO_UI5_PORTAL_PageCalendar",modelPageCalendar.getData());
+}
+function getOnlineCalendar(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_DATA&ajax_applid=ZDFO_UI5_PORTAL&field_id=00255&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+
+
+Calendar.removeTypesOfAllDates();
+var dataCalendar = data.modelCalendarData;
+$.each(dataCalendar, function (i, elem) {
+Calendar.toggleDatesType([elem.Date],elem.Type, true);
+});
+modelMenu.setData(data.modelMenuData);
+
+Menu.setBindingContext(modelMenu.getData());
+
+$.sap.require("jquery.sap.storage");
+var MenuStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+MenuStorage.remove("ZDFO_UI5_PORTAL_Menu");
+MenuStorage.put("ZDFO_UI5_PORTAL_Menu",modelMenu.getData());
+
+Menu.setBindingContext(modelMenu.getData());
+
+var datainProfile = data.modelinProfileData;
+inProfile.destroyItems();
+$.each(datainProfile, function (i, elem) {
+inProfile.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var inProfileStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+inProfileStorage.remove("ZDFO_UI5_PORTAL_inProfile");
+inProfileStorage.put("ZDFO_UI5_PORTAL_inProfile",datainProfile);
+modelListWage.setData(data.modelListWageData);
+$.sap.require("jquery.sap.storage");
+var ListWageStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListWageStorage.remove("ZDFO_UI5_PORTAL_ListWage");
+ListWageStorage.put("ZDFO_UI5_PORTAL_ListWage",modelListWage.getData());
+modelListAct.setData(data.modelListActData);
+$.sap.require("jquery.sap.storage");
+var ListActStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListActStorage.remove("ZDFO_UI5_PORTAL_ListAct");
+ListActStorage.put("ZDFO_UI5_PORTAL_ListAct",modelListAct.getData());
+modelListAbsAtt.setData(data.modelListAbsAttData);
+$.sap.require("jquery.sap.storage");
+var ListAbsAttStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListAbsAttStorage.remove("ZDFO_UI5_PORTAL_ListAbsAtt");
+ListAbsAttStorage.put("ZDFO_UI5_PORTAL_ListAbsAtt",modelListAbsAtt.getData());
+modelListFav.setData(data.modelListFavData);
+$.sap.require("jquery.sap.storage");
+var ListFavStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListFavStorage.remove("ZDFO_UI5_PORTAL_ListFav");
+ListFavStorage.put("ZDFO_UI5_PORTAL_ListFav",modelListFav.getData());
+modelchartAbsData.setData(data.modelchartAbsDataData);
+$.sap.require("jquery.sap.storage");
+var chartAbsDataStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+chartAbsDataStorage.remove("ZDFO_UI5_PORTAL_chartAbsData");
+chartAbsDataStorage.put("ZDFO_UI5_PORTAL_chartAbsData",modelchartAbsData.getData());
+
+chartAbsData.setBindingContext(modelchartAbsData.getData());
+
+modelchartHoursData.setData(data.modelchartHoursDataData);
+$.sap.require("jquery.sap.storage");
+var chartHoursDataStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+chartHoursDataStorage.remove("ZDFO_UI5_PORTAL_chartHoursData");
+chartHoursDataStorage.put("ZDFO_UI5_PORTAL_chartHoursData",modelchartHoursData.getData());
+
+chartHoursData.setBindingContext(modelchartHoursData.getData());
+
+modelPageCalendar.setData(data.modelPageCalendarData);
+
+PageCalendar.setBindingContext(modelPageCalendar.getData());
+
+$.sap.require("jquery.sap.storage");
+var PageCalendarStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+PageCalendarStorage.remove("ZDFO_UI5_PORTAL_PageCalendar");
+PageCalendarStorage.put("ZDFO_UI5_PORTAL_PageCalendar",modelPageCalendar.getData());
+
+PageCalendar.setBindingContext(modelPageCalendar.getData());
+
+modelListHours.setData(data.modelListHoursData);
+
+// Set Busy
+PageCalendar.setBusy(false);
+
+// Update the filter
+if (Calendar.getVisible==true)
+{
+    Calendar.fireTapOnDate();
+}
+
+updateCalendar.hide();
+}
+,error: function (result, status) {
+
+PageCalendar.setBusy(false);
+
+updateCalendar.hide();}
+});
+}
+function getOnlineListHours(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_DATA&ajax_applid=ZDFO_UI5_PORTAL&field_id=00263&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListHours.setData(data.modelListHoursData);
+var datainProfile = data.modelinProfileData;
+inProfile.destroyItems();
+$.each(datainProfile, function (i, elem) {
+inProfile.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var inProfileStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+inProfileStorage.remove("ZDFO_UI5_PORTAL_inProfile");
+inProfileStorage.put("ZDFO_UI5_PORTAL_inProfile",datainProfile);
+modelListWage.setData(data.modelListWageData);
+$.sap.require("jquery.sap.storage");
+var ListWageStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListWageStorage.remove("ZDFO_UI5_PORTAL_ListWage");
+ListWageStorage.put("ZDFO_UI5_PORTAL_ListWage",modelListWage.getData());
+modelListAct.setData(data.modelListActData);
+$.sap.require("jquery.sap.storage");
+var ListActStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListActStorage.remove("ZDFO_UI5_PORTAL_ListAct");
+ListActStorage.put("ZDFO_UI5_PORTAL_ListAct",modelListAct.getData());
+modelListAbsAtt.setData(data.modelListAbsAttData);
+$.sap.require("jquery.sap.storage");
+var ListAbsAttStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListAbsAttStorage.remove("ZDFO_UI5_PORTAL_ListAbsAtt");
+ListAbsAttStorage.put("ZDFO_UI5_PORTAL_ListAbsAtt",modelListAbsAtt.getData());
+modelListFav.setData(data.modelListFavData);
+$.sap.require("jquery.sap.storage");
+var ListFavStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListFavStorage.remove("ZDFO_UI5_PORTAL_ListFav");
+ListFavStorage.put("ZDFO_UI5_PORTAL_ListFav",modelListFav.getData());
+modelchartAbsData.setData(data.modelchartAbsDataData);
+$.sap.require("jquery.sap.storage");
+var chartAbsDataStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+chartAbsDataStorage.remove("ZDFO_UI5_PORTAL_chartAbsData");
+chartAbsDataStorage.put("ZDFO_UI5_PORTAL_chartAbsData",modelchartAbsData.getData());
+
+chartAbsData.setBindingContext(modelchartAbsData.getData());
+
+modelchartHoursData.setData(data.modelchartHoursDataData);
+$.sap.require("jquery.sap.storage");
+var chartHoursDataStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+chartHoursDataStorage.remove("ZDFO_UI5_PORTAL_chartHoursData");
+chartHoursDataStorage.put("ZDFO_UI5_PORTAL_chartHoursData",modelchartHoursData.getData());
+
+chartHoursData.setBindingContext(modelchartHoursData.getData());
+
+modelPageCalendar.setData(data.modelPageCalendarData);
+
+PageCalendar.setBindingContext(modelPageCalendar.getData());
+
+$.sap.require("jquery.sap.storage");
+var PageCalendarStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+PageCalendarStorage.remove("ZDFO_UI5_PORTAL_PageCalendar");
+PageCalendarStorage.put("ZDFO_UI5_PORTAL_PageCalendar",modelPageCalendar.getData());
+
+PageCalendar.setBindingContext(modelPageCalendar.getData());
+
+Calendar.removeTypesOfAllDates();
+var dataCalendar = data.modelCalendarData;
+$.each(dataCalendar, function (i, elem) {
+Calendar.toggleDatesType([elem.Date],elem.Type, true);
+});}
+});
+}
+function getOnlinePageEntry(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_ENTRY&ajax_applid=ZDFO_UI5_PORTAL&field_id=00208&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSettings.getJSON()),
+success: function (data) {
+modelPageEntry.setData(data.modelPageEntryData);
+
+PageEntry.setBindingContext(modelPageEntry.getData());
+
+modelListReturn.setData(data.modelListReturnData);
+
+// Set Busy
+PageCalendar.setBusy(false);
+
+// Check for Assigned PERNR
+data = modelPageEntry.getData();
+
+if (data.STATUS == "99")
+{
+
+    // Message
+    jQuery.sap.require("sap.m.MessageToast");
+    sap.m.MessageToast.show("No employee number assigned to your user");
+    return;
+
+}
+
+// Navigate
+App.to("PageEntry");
+
+// Update Detail Icon
+updateDetailIcon();
+}
+,error: function (result, status) {
+PageCalendar.setBusy(false);
+}
+});
+}
+function getOnlineSaveCATS(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=ENTRY_SAVE&ajax_applid=ZDFO_UI5_PORTAL&field_id=00209&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSettings.getJSON() + "||" +modelPageEntry.getJSON()),
+success: function (data) {
+modelPageEntry.setData(data.modelPageEntryData);
+
+PageEntry.setBindingContext(modelPageEntry.getData());
+
+modelListReturn.setData(data.modelListReturnData);
+
+PageEntry.setBusy(false);
+
+data = modelListReturn.getData();
+
+if (data.length === 0)
+{
+
+    // Message to user
+    jQuery.sap.require("sap.m.MessageToast");
+    sap.m.MessageToast.show("Entry saved successfully");
+
+    // Insert into ListHours Model
+    var listData = modelListHours.getData();
+    var newRecord = modelPageEntry.getData();
+    listData.push(newRecord);
+    modelListHours.setData(listData);
+
+    // Update Calendar + IconTabBar
+    var iconBar = modelPageCalendar.getData();
+    iconBar.COUNT_ALL = iconBar.COUNT_ALL + 1;
+
+    switch(newRecord.STATUS)
+    {
+        case "10":
+        Calendar.toggleDatesType([inEntryDate.getDateValue()],"Type06", true);
+                iconBar.COUNT_UNRELEASE = iconBar.COUNT_UNRELEASE + 1;
+                break;
+
+        case "20":
+        Calendar.toggleDatesType([inEntryDate.getDateValue()],"Type04", true);
+                iconBar.COUNT_RELEASE = iconBar.COUNT_RELEASE + 1;
+                break;
+
+        case "30":
+        Calendar.toggleDatesType([inEntryDate.getDateValue()],"Type01", true);
+                iconBar.COUNT_APPROVE = iconBar.COUNT_APPROVE + 1;
+                break;
+
+        case "40":
+        Calendar.toggleDatesType([inEntryDate.getDateValue()],"Type07", true);
+                iconBar.COUNT_REJECT = iconBar.COUNT_REJECT + 1;
+                break;
+
+    }
+
+    modelPageCalendar.setData(iconBar);
+
+
+    // Navigate
+    App.backToPage("PageCalendar");
+
+}
+else
+{
+    ListReturn.setVisible(true);
+
+    // Update Detail Icon
+    updateDetailIcon();
+}
+}
+,error: function (result, status) {
+PageEntry.setBusy(false);
+}
+});
+}
+function getOnlineDelete(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=ENTRY_DELETE&ajax_applid=ZDFO_UI5_PORTAL&field_id=00210&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSettings.getJSON() + "||" +modelPageEntry.getJSON()),
+success: function (data) {
+modelListReturn.setData(data.modelListReturnData);
+Calendar.removeTypesOfAllDates();
+var dataCalendar = data.modelCalendarData;
+$.each(dataCalendar, function (i, elem) {
+Calendar.toggleDatesType([elem.Date],elem.Type, true);
+});
+modelListHours.setData(data.modelListHoursData);
+
+PageEntry.setBusy(false);
+
+data = modelListReturn.getData();
+
+if (data.length === 0)
+{
+
+    jQuery.sap.require("sap.m.MessageToast");
+    sap.m.MessageToast.show("Entry deleted successfully");
+
+    App.backToPage("PageCalendar");
+
+}
+else
+{
+
+    ListReturn.setVisible(true);
+}
+}
+,error: function (result, status) {
+PageEntry.setBusy(false);
+}
+});
+}
+function getOnlineListReturn(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00211&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListReturn.setData(data.modelListReturnData);}
+});
+}
+function getOnlinechartHoursData(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00198&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelchartHoursData.setData(data.modelchartHoursDataData);
+$.sap.require("jquery.sap.storage");
+var chartHoursDataStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+chartHoursDataStorage.remove("ZDFO_UI5_PORTAL_chartHoursData");
+chartHoursDataStorage.put("ZDFO_UI5_PORTAL_chartHoursData",modelchartHoursData.getData());
+
+chartHoursData.setBindingContext(modelchartHoursData.getData());
+}
+});
+}
+function getCachechartHoursData(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_chartHoursData");
+if (!localData) { return; }
+modelchartHoursData.setData(localData);}
+
+function setCachechartHoursData() {
+$.sap.require("jquery.sap.storage"); var chartHoursDataStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+chartHoursDataStorage.remove("ZDFO_UI5_PORTAL_chartHoursData");
+chartHoursDataStorage.put("ZDFO_UI5_PORTAL_chartHoursData",modelchartHoursData.getData());
+}
+function getOnlinechartAbsData(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00195&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelchartAbsData.setData(data.modelchartAbsDataData);
+$.sap.require("jquery.sap.storage");
+var chartAbsDataStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+chartAbsDataStorage.remove("ZDFO_UI5_PORTAL_chartAbsData");
+chartAbsDataStorage.put("ZDFO_UI5_PORTAL_chartAbsData",modelchartAbsData.getData());
+
+chartAbsData.setBindingContext(modelchartAbsData.getData());
+}
+});
+}
+function getCachechartAbsData(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_chartAbsData");
+if (!localData) { return; }
+modelchartAbsData.setData(localData);}
+
+function setCachechartAbsData() {
+$.sap.require("jquery.sap.storage"); var chartAbsDataStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+chartAbsDataStorage.remove("ZDFO_UI5_PORTAL_chartAbsData");
+chartAbsDataStorage.put("ZDFO_UI5_PORTAL_chartAbsData",modelchartAbsData.getData());
+}
+function getOnlineListFav(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00177&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListFav.setData(data.modelListFavData);
+$.sap.require("jquery.sap.storage");
+var ListFavStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListFavStorage.remove("ZDFO_UI5_PORTAL_ListFav");
+ListFavStorage.put("ZDFO_UI5_PORTAL_ListFav",modelListFav.getData());}
+});
+}
+function getCacheListFav(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_ListFav");
+if (!localData) { return; }
+modelListFav.setData(localData);}
+
+function setCacheListFav() {
+$.sap.require("jquery.sap.storage"); var ListFavStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+ListFavStorage.remove("ZDFO_UI5_PORTAL_ListFav");
+ListFavStorage.put("ZDFO_UI5_PORTAL_ListFav",modelListFav.getData());
+}
+function getOnlineListAbsAtt(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00169&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListAbsAtt.setData(data.modelListAbsAttData);
+$.sap.require("jquery.sap.storage");
+var ListAbsAttStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListAbsAttStorage.remove("ZDFO_UI5_PORTAL_ListAbsAtt");
+ListAbsAttStorage.put("ZDFO_UI5_PORTAL_ListAbsAtt",modelListAbsAtt.getData());}
+});
+}
+function getCacheListAbsAtt(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_ListAbsAtt");
+if (!localData) { return; }
+modelListAbsAtt.setData(localData);}
+
+function setCacheListAbsAtt() {
+$.sap.require("jquery.sap.storage"); var ListAbsAttStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+ListAbsAttStorage.remove("ZDFO_UI5_PORTAL_ListAbsAtt");
+ListAbsAttStorage.put("ZDFO_UI5_PORTAL_ListAbsAtt",modelListAbsAtt.getData());
+}
+function getOnlineListAct(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00159&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListAct.setData(data.modelListActData);
+$.sap.require("jquery.sap.storage");
+var ListActStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListActStorage.remove("ZDFO_UI5_PORTAL_ListAct");
+ListActStorage.put("ZDFO_UI5_PORTAL_ListAct",modelListAct.getData());}
+});
+}
+function getCacheListAct(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_ListAct");
+if (!localData) { return; }
+modelListAct.setData(localData);}
+
+function setCacheListAct() {
+$.sap.require("jquery.sap.storage"); var ListActStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+ListActStorage.remove("ZDFO_UI5_PORTAL_ListAct");
+ListActStorage.put("ZDFO_UI5_PORTAL_ListAct",modelListAct.getData());
+}
+function getOnlineListWage(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00149&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListWage.setData(data.modelListWageData);
+$.sap.require("jquery.sap.storage");
+var ListWageStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+ListWageStorage.remove("ZDFO_UI5_PORTAL_ListWage");
+ListWageStorage.put("ZDFO_UI5_PORTAL_ListWage",modelListWage.getData());}
+});
+}
+function getCacheListWage(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_ListWage");
+if (!localData) { return; }
+modelListWage.setData(localData);}
+
+function setCacheListWage() {
+$.sap.require("jquery.sap.storage"); var ListWageStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+ListWageStorage.remove("ZDFO_UI5_PORTAL_ListWage");
+ListWageStorage.put("ZDFO_UI5_PORTAL_ListWage",modelListWage.getData());
+}
+function getOnlineRelease(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=RELEASE&ajax_applid=ZDFO_UI5_PORTAL&field_id=00129&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSettings.getJSON() + "||" +modelListRelease.getJSON()),
+success: function (data) {
+modelListReturnRelease.setData(data.modelListReturnReleaseData);
+modelListRelease.setData(data.modelListReleaseData);
+Calendar.removeTypesOfAllDates();
+var dataCalendar = data.modelCalendarData;
+$.each(dataCalendar, function (i, elem) {
+Calendar.toggleDatesType([elem.Date],elem.Type, true);
+});
+modelListHours.setData(data.modelListHoursData);
+
+
+// Hide Busy
+PageRelease.setBusy(false);
+
+data = modelListReturnRelease.getData();
+
+if (data.length === 0)
+{
+
+    jQuery.sap.require("sap.m.MessageToast");
+    sap.m.MessageToast.show("Release successfully");
+
+    App.backToPage("PageCalendar");
+
+}
+else
+{
+
+    ListReturnRelease.setVisible(true);
+}
+}
+});
+}
+function getOnlineListReturnRelease(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00130&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListReturnRelease.setData(data.modelListReturnReleaseData);}
+});
+}
+function getOnlineListRelease(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_DATA_RELEASE&ajax_applid=ZDFO_UI5_PORTAL&field_id=00133&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListRelease.setData(data.modelListReleaseData);
+App.to("PageRelease");}
+});
+}
+function getOnlinePageSettings(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00107&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageSettings.setData(data.modelPageSettingsData);
+
+PageSettings.setBindingContext(modelPageSettings.getData());
+
+$.sap.require("jquery.sap.storage");
+var PageSettingsStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+PageSettingsStorage.remove("ZDFO_UI5_PORTAL_PageSettings");
+PageSettingsStorage.put("ZDFO_UI5_PORTAL_PageSettings",modelPageSettings.getData());
+
+PageSettings.setBindingContext(modelPageSettings.getData());
+}
+});
+}
+function getCachePageSettings(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_PageSettings");
+
+modelPageSettings.setData(localData);}
+
+function setCachePageSettings() {
+$.sap.require("jquery.sap.storage"); var PageSettingsStorage  = $.sap.storage(jQuery.sap.storage.Type.local); 
+PageSettingsStorage.remove("ZDFO_UI5_PORTAL_PageSettings");
+PageSettingsStorage.put("ZDFO_UI5_PORTAL_PageSettings",modelPageSettings.getData());
+}
+function getOnlineinProfile(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00124&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+
+
+var datainProfile = data.modelinProfileData;
+inProfile.destroyItems();
+$.each(datainProfile, function (i, elem) {
+inProfile.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var inProfileStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+inProfileStorage.remove("ZDFO_UI5_PORTAL_inProfile");
+inProfileStorage.put("ZDFO_UI5_PORTAL_inProfile",datainProfile);}
+});
+}
+function getCacheinProfile(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_inProfile");
+if (!localData) { getOnlineinProfile(); return; }
+inProfile.destroyItems();
+$.each(localData, function (i, elem) {
+inProfile.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+}
+
+function getOnlinePageSearchCC(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00097&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageSearchCC.setData(data.modelPageSearchCCData);
+
+PageSearchCC.setBindingContext(modelPageSearchCC.getData());
+}
+});
+}
+function getOnlineListCC(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=SEARCH_COST_CENTER&ajax_applid=ZDFO_UI5_PORTAL&field_id=00100&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSearchCC.getJSON() + "||" +modelPageEntry.getJSON()),
+success: function (data) {
+modelListCC.setData(data.modelListCCData);
+PageSearchCC.setBusy(false);}
+,error: function (result, status) {
+PageSearchCC.setBusy(false);
+}
+});
+}
+function getOnlinePageSearchWBS(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00087&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageSearchWBS.setData(data.modelPageSearchWBSData);
+
+PageSearchWBS.setBindingContext(modelPageSearchWBS.getData());
+}
+});
+}
+function getOnlineListWBS(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=SEARCH_WBS&ajax_applid=ZDFO_UI5_PORTAL&field_id=00090&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSearchWBS.getJSON() + "||" +modelPageEntry.getJSON()),
+success: function (data) {
+modelListWBS.setData(data.modelListWBSData);
+PageSearchWBS.setBusy(false);}
+,error: function (result, status) {
+PageSearchWBS.setBusy(false);
+}
+});
+}
+function getOnlinePageSearchNetwork(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00077&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageSearchNetwork.setData(data.modelPageSearchNetworkData);
+
+PageSearchNetwork.setBindingContext(modelPageSearchNetwork.getData());
+}
+});
+}
+function getOnlineListNetwork(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=SEARCH_NETWORK&ajax_applid=ZDFO_UI5_PORTAL&field_id=00080&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSearchNetwork.getJSON() + "||" +modelPageEntry.getJSON()),
+success: function (data) {
+modelListNetwork.setData(data.modelListNetworkData);
+PageSearchNetwork.setBusy(false);}
+,error: function (result, status) {
+PageSearchNetwork.setBusy(false);
+}
+});
+}
+function getOnlinePageSearchOperation(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00069&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageSearchOperation.setData(data.modelPageSearchOperationData);
+
+PageSearchOperation.setBindingContext(modelPageSearchOperation.getData());
+}
+});
+}
+function getOnlineListOperation(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=SEARCH_OPERATION&ajax_applid=ZDFO_UI5_PORTAL&field_id=00070&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSearchOperation.getJSON() + "||" +modelPageSearchNetwork.getJSON() + "||" +modelPageEntry.getJSON()),
+success: function (data) {
+modelListOperation.setData(data.modelListOperationData);
+
+PageSearchNetwork.setBusy(false);
+
+App.to("PageSearchOperation");
+}
+,error: function (result, status) {
+PageSearchNetwork.setBusy(false);
+}
+});
+}
+function getOnlinePageSearchiOrder(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00059&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageSearchiOrder.setData(data.modelPageSearchiOrderData);
+
+PageSearchiOrder.setBindingContext(modelPageSearchiOrder.getData());
+}
+});
+}
+function getOnlineListiOrder(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=SEARCH_IORDER&ajax_applid=ZDFO_UI5_PORTAL&field_id=00062&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageSearchiOrder.getJSON() + "||" +modelPageEntry.getJSON()),
+success: function (data) {
+modelListiOrder.setData(data.modelListiOrderData);
+PageSearchiOrder.setBusy(false);}
+,error: function (result, status) {
+PageSearchiOrder.setBusy(false);
+}
+});
+}
+function getOnlinePageList(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00387&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelPageList.setData(data.modelPageListData);
+
+PageList.setBindingContext(modelPageList.getData());
+}
+});
+}
+function getOnlinelistTrip(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=PAGE_LIST&ajax_applid=ZDFO_UI5_PORTAL&field_id=00402&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modellistTrip.setData(data.modellistTripData);
+modelMenu.setData(data.modelMenuData);
+
+Menu.setBindingContext(modelMenu.getData());
+
+$.sap.require("jquery.sap.storage");
+var MenuStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+MenuStorage.remove("ZDFO_UI5_PORTAL_Menu");
+MenuStorage.put("ZDFO_UI5_PORTAL_Menu",modelMenu.getData());
+
+Menu.setBindingContext(modelMenu.getData());
+
+modelPageList.setData(data.modelPageListData);
+
+PageList.setBindingContext(modelPageList.getData());
+
+
+updatelistTrip.hide();
+getOnlinelistTrip();
+}
+,error: function (result, status) {
+ajaxError(result, status);
+}
+});
+}
+function getOnlinePageDetail(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=PAGE_DETAIL&ajax_applid=ZDFO_UI5_PORTAL&field_id=00299&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageDetail.getJSON()),
+success: function (data) {
+modelPageDetail.setData(data.modelPageDetailData);
+
+PageDetail.setBindingContext(modelPageDetail.getData());
+
+modellistStatus.setData(data.modellistStatusData);
+modelboxReceipts.setData(data.modelboxReceiptsData);
+
+boxReceipts.setBindingContext(modelboxReceipts.getData());
+
+modellistReceipts.setData(data.modellistReceiptsData);
+modelboxMileage.setData(data.modelboxMileageData);
+
+boxMileage.setBindingContext(modelboxMileage.getData());
+
+modellistMileage.setData(data.modellistMileageData);
+modellistTrip.setData(data.modellistTripData);
+
+//Hide Refresh Spinners
+BusyList.setVisible(false);
+updatelistTrip.hide();
+
+//Set Tab Info as Default
+tabTravel.setSelectedTab(0);
+
+//Navigate to Detail Page
+App.to("PageDetail");
+
+//Set Google Map Hidden
+$("#GoogleMap").css("height","0px");
+
+}
+,error: function (result, status) {
+ajaxError(result, status);
+}
+});
+}
+function getOnlineSaveTravelExpense(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=SAVE&ajax_applid=ZDFO_UI5_PORTAL&field_id=00301&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelPageDetail.getJSON()),
+success: function (data) {
+modellistStatus.setData(data.modellistStatusData);
+modellistTrip.setData(data.modellistTripData);}
+});
+}
+function getOnlinelistStatus(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=&ajax_applid=ZDFO_UI5_PORTAL&field_id=00307&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modellistStatus.setData(data.modellistStatusData);
+
+getOnlineListStatus();
+}
+});
+}
+function getOnlineinCountry(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_GLOBAL_DATA&ajax_applid=ZDFO_UI5_PORTAL&field_id=00330&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+
+
+var datainCountry = data.modelinCountryData;
+inCountry.destroyItems();
+$.each(datainCountry, function (i, elem) {
+inCountry.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var inCountryStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+inCountryStorage.remove("ZDFO_UI5_PORTAL_inCountry");
+inCountryStorage.put("ZDFO_UI5_PORTAL_inCountry",datainCountry);}
+});
+}
+function getCacheinCountry(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_inCountry");
+if (!localData) { getOnlineinCountry(); return; }
+inCountry.destroyItems();
+$.each(localData, function (i, elem) {
+inCountry.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+}
+
+function getOnlineboxReceipts(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=UPDATE_RECEIPT&ajax_applid=ZDFO_UI5_PORTAL&field_id=00335&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelboxReceipts.getJSON()),
+success: function (data) {
+modelboxReceipts.setData(data.modelboxReceiptsData);
+
+boxReceipts.setBindingContext(modelboxReceipts.getData());
+
+modelPageDetail.setData(data.modelPageDetailData);
+
+PageDetail.setBindingContext(modelPageDetail.getData());
+
+modellistReceipts.setData(data.modellistReceiptsData);}
+,error: function (result, status) {
+ajaxError(result, status);
+}
+});
+}
+function getOnlineinExpenseType(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_GLOBAL_DATA&ajax_applid=ZDFO_UI5_PORTAL&field_id=00350&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+
+
+var datainExpenseType = data.modelinExpenseTypeData;
+inExpenseType.destroyItems();
+$.each(datainExpenseType, function (i, elem) {
+inExpenseType.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var inExpenseTypeStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+inExpenseTypeStorage.remove("ZDFO_UI5_PORTAL_inExpenseType");
+inExpenseTypeStorage.put("ZDFO_UI5_PORTAL_inExpenseType",datainExpenseType);}
+});
+}
+function getCacheinExpenseType(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_inExpenseType");
+
+inExpenseType.destroyItems();
+$.each(localData, function (i, elem) {
+inExpenseType.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+}
+
+function getOnlinelistReceipts(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_RECEIPTS&ajax_applid=ZDFO_UI5_PORTAL&field_id=00344&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modellistReceipts.setData(data.modellistReceiptsData);}
+});
+}
+function getOnlineboxMileage(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=UPDATE_MILEAGE&ajax_applid=ZDFO_UI5_PORTAL&field_id=00365&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelboxMileage.getJSON()),
+success: function (data) {
+modelboxMileage.setData(data.modelboxMileageData);
+
+boxMileage.setBindingContext(modelboxMileage.getData());
+
+modelPageDetail.setData(data.modelPageDetailData);
+
+PageDetail.setBindingContext(modelPageDetail.getData());
+
+modellistMileage.setData(data.modellistMileageData);}
+,error: function (result, status) {
+ajaxError(result, status);
+}
+});
+}
+function getOnlinelistMileage(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_MILEAGE&ajax_applid=ZDFO_UI5_PORTAL&field_id=00375&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modellistMileage.setData(data.modellistMileageData);}
+});
+}
+function getOnlinelistFav(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_FAV&ajax_applid=ZDFO_UI5_PORTAL&field_id=00573&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modellistFav.setData(data.modellistFavData);
+
+updateHome.hide();
+getOnlinelistFav();
+}
+,error: function (result, status) {
+updateHome.hide();
+}
+});
+}
+function getOnlinelistDepartment(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_MY_DEPARTMENT&ajax_applid=ZDFO_UI5_PORTAL&field_id=00618&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modellistDepartment.setData(data.modellistDepartmentData);
+
+updateDepartment.hide();
+getOnlinelistDepartment();
+}
+,error: function (result, status) {
+updateDepartment.hide();
+}
+});
+}
+function getOnlineListTotal(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_TOTAL&ajax_applid=ZDFO_UI5_PORTAL&field_id=00524&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListTotal.setData(data.modelListTotalData);
+
+Updatepeople.hide();
+BusyCats.setVisible(false);
+getOnlineListTotal();
+}
+,error: function (result, status) {
+
+Updatepeople.hide();
+BusyCats.setVisible(false);}
+});
+}
+function getOnlineListStatus(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=SUBMIT&ajax_applid=ZDFO_UI5_PORTAL&field_id=00534&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelListDetail.getJSON()),
+success: function (data) {
+modelListStatus.setData(data.modelListStatusData);
+modelListDetail.setData(data.modelListDetailData);
+
+BusyCats.setVisible(false);
+}
+,error: function (result, status) {
+BusyCats.setVisible(false);
+}
+});
+}
+function getOnlineListDetail(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_DETAIL_CATS&ajax_applid=ZDFO_UI5_PORTAL&field_id=00536&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListDetail.setData(data.modelListDetailData);
+
+BusyCats.setVisible(false);
+
+getOnlineListDetail(value);
+}
+,error: function (result, status) {
+
+BusyCats.setVisible(false);}
+});
+}
+function getOnlineListInbox(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_INBOX&ajax_applid=ZDFO_UI5_PORTAL&field_id=00673&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelListInbox.setData(data.modelListInboxData);
+
+UpdateInbox.hide();
+BusyForm.setVisible(false);
+getOnlineListInbox();
+}
+,error: function (result, status) {
+
+UpdateInbox.hide();
+BusyForm.setVisible(false);}
+});
+}
+function getOnlineWFform(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=IT0014&ajax_applid=ZDFO_UI5_PORTAL&field_id=00676&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+modelWFform.setData(data.modelWFformData);
+
+WFform.setBindingContext(modelWFform.getData());
+}
+});
+}
+function getOnlineWFbuttonForm(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=IT0014_WF_BUTTON&ajax_applid=ZDFO_UI5_PORTAL&field_id=00814&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelWFform.getJSON()),
+success: function (data) {
+modelWFform.setData(data.modelWFformData);
+
+WFform.setBindingContext(modelWFform.getData());
+}
+});
+}
+function getOnlineEkstra(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=IT0014&ajax_applid=ZDFO_UI5_PORTAL&field_id=00813&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelEkstra.getJSON()),
+success: function (data) {
+modelEkstra.setData(data.modelEkstraData);
+
+Ekstra.setBindingContext(modelEkstra.getData());
+
+
+App.to("Ekstra");
+}
+});
+}
+function getOnlinefromMonthIT0014(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_MONTHS&ajax_applid=ZDFO_UI5_PORTAL&field_id=00819&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+
+
+var datafromMonthIT0014 = data.modelfromMonthIT0014Data;
+fromMonthIT0014.destroyItems();
+$.each(datafromMonthIT0014, function (i, elem) {
+fromMonthIT0014.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var fromMonthIT0014Storage = $.sap.storage(jQuery.sap.storage.Type.local);
+fromMonthIT0014Storage.remove("ZDFO_UI5_PORTAL_fromMonthIT0014");
+fromMonthIT0014Storage.put("ZDFO_UI5_PORTAL_fromMonthIT0014",datafromMonthIT0014);}
+});
+}
+function getCachefromMonthIT0014(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_fromMonthIT0014");
+
+fromMonthIT0014.destroyItems();
+$.each(localData, function (i, elem) {
+fromMonthIT0014.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+}
+
+function getOnlinetoMonthIT0014(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=GET_MONTHS&ajax_applid=ZDFO_UI5_PORTAL&field_id=00820&ajax_value=" + value + "",
+dataType: "json",
+success: function (data) {
+
+
+var datatoMonthIT0014 = data.modeltoMonthIT0014Data;
+toMonthIT0014.destroyItems();
+$.each(datatoMonthIT0014, function (i, elem) {
+toMonthIT0014.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var toMonthIT0014Storage = $.sap.storage(jQuery.sap.storage.Type.local);
+toMonthIT0014Storage.remove("ZDFO_UI5_PORTAL_toMonthIT0014");
+toMonthIT0014Storage.put("ZDFO_UI5_PORTAL_toMonthIT0014",datatoMonthIT0014);}
+});
+}
+function getCachetoMonthIT0014(value) {
+$.sap.require("jquery.sap.storage");
+var localStorage = $.sap.storage(jQuery.sap.storage.Type.local);
+var localData = localStorage.get("ZDFO_UI5_PORTAL_toMonthIT0014");
+
+toMonthIT0014.destroyItems();
+$.each(localData, function (i, elem) {
+toMonthIT0014.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+}
+
+function getOnlineWFbutton(value) {
+$.ajax({
+type: "POST",
+url: "http://neptune.solidgroup.no/neptune/zdfo_ui5_portal.html?sap-sessioncmd=open&sap-client=100neptune_ajax?sap-client=100&ajax_id=IT0014_WF_BUTTON&ajax_applid=ZDFO_UI5_PORTAL&field_id=00790&ajax_value=" + value + "",
+dataType: "json",
+data: encodeURIComponent(modelEkstra.getJSON()),
+success: function (data) {
+modelEkstra.setData(data.modelEkstraData);
+
+Ekstra.setBindingContext(modelEkstra.getData());
+
+var datafromMonthIT0014 = data.modelfromMonthIT0014Data;
+fromMonthIT0014.destroyItems();
+$.each(datafromMonthIT0014, function (i, elem) {
+fromMonthIT0014.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var fromMonthIT0014Storage = $.sap.storage(jQuery.sap.storage.Type.local);
+fromMonthIT0014Storage.remove("ZDFO_UI5_PORTAL_fromMonthIT0014");
+fromMonthIT0014Storage.put("ZDFO_UI5_PORTAL_fromMonthIT0014",datafromMonthIT0014);
+var datatoMonthIT0014 = data.modeltoMonthIT0014Data;
+toMonthIT0014.destroyItems();
+$.each(datatoMonthIT0014, function (i, elem) {
+toMonthIT0014.addItem(new sap.ui.core.Item({key: elem.Key, text: elem.Text}));
+});
+$.sap.require("jquery.sap.storage");
+var toMonthIT0014Storage = $.sap.storage(jQuery.sap.storage.Type.local);
+toMonthIT0014Storage.remove("ZDFO_UI5_PORTAL_toMonthIT0014");
+toMonthIT0014Storage.put("ZDFO_UI5_PORTAL_toMonthIT0014",datatoMonthIT0014);}
+});
+}
 </script>
-<div id="Header" style="background:-webkit-linear-gradient(top, #a9b0ba 0%,#a9b0ba 2%,#ffffff 100%);;border:0px;box-shadow:0 0 20px 5px rgba(0, 0, 0, .35);height:89px;left:0px;margin:0px;position:fixed;top:0px;width:100%;z-index:999;" data-role="header"><div id="Logo" style="padding-top:22px;padding-left:20px;padding-bottom:19px;float:left;background:transparent;"><img id="DFOLogo" height="48px" src="neptune/public/application/zdfo_timesheet_entry/images/logo_dfo.png" width="242px"/></div></div><div id="Content" class="ui-mobile-viewport-transitioning" style="width:100%;padding-top:132px;display:block;border:0px;background:transparent;" data-role="content"><div id="mainPage" style="bottom:47px;position:fixed;right:16px;visibility:hidden;z-index:999;"><ul id="myMenu" style="background:transparent;border:0px;position:relative;"><ul id="menu" data-divider-theme="a" data-theme="c" style="border:0px;box-shadow:0 0 20px 5px rgba(0, 0, 0, .35);z-index:999;" data-role="listview"><li id="Support" class="ui-test" data-icon="forward" data-theme="c" style="z-index:999;border:0px;background:-webkit-linear-gradient(left, #a5d2ff 0%,#92c6fa 50%,#92c6fa 50%,#7db8f3 100%);;"><a style="color:#597795;text-decoration:none;">Support</a></li><li id="Help" class="ui-test" data-icon="info" data-theme="c" style="background:-webkit-linear-gradient(left, #a5d2ff 0%,#92c6fa 50%,#92c6fa 50%,#7db8f3 100%);;border:0px;z-index:999;"><a style="color:#597795;text-decoration:none;">Hjelp</a></li></ul></ul></div><ul id="Mainmenulist" data-divider-theme="a" data-theme="c" style="margin-bottom:30px;padding-left:10px;padding-right:10px;" data-role="listview"><li id="Timesheet"><a id="goTimesheet" href="ZDFO_TIMESHEET_2.html"><h3 id="Header" style="padding-left:10px;">Min Timeregistrering</h3><h3 id="Desc" class=ui-li-desc style="padding-left:10px;">Vis og registrer timer</h3><img id="Image" height="26" src="neptune/public/images/bag32.png" class="ui-li-icon" style="margin-top:3px;"/></a></li><li id="Expenses" data-icon="arrow-r"><a id="GoExpenses" href="ZDFO_TRAVEL_EXPENSE_LIST.html"><h3 id="Header" style="padding-left:10px;">Mine Reiseregninger</h3><h3 id="Desc" class=ui-li-desc style="padding-left:10px;">Vis og opprett reiseregninger</h3><img id="Image" class="ui-li-icon" height="26" src="neptune/public/images/moneyreceipt32.png"/></a></li><li id="Employees" data-icon="arrow-r"><a id="GoEmployees" data-transition="fade" href="ZDFO_EMPLIST.html"><h3 id="Header" style="padding-left:10px;">Ansatte</h3><h3 id="Desc" class=ui-li-desc style="padding-left:10px;">Vis ansatte</h3><img id="Image" src="neptune/public/images/contactcard32.png" height="26" class="ui-li-icon"/></a></li><li id="WorkflowInbox" data-icon="arrow-r"><a id="GoWorkflowInbox" data-transition="fade" href="ZDFO_WF.html"><h3 id="Header" style="padding-left:10px;">Mine Oppgaver<label style="font-size:10px;">&nbsp;(</label><label style="font-size:10px;">5</label><label style="font-size:10px;">nye)</label></h3><h3 id="Desc" class=ui-li-desc style="padding-left:10px;">Administrer arbeidsflyter</h3><img id="Image" height="26" src="neptune/public/images/boxdownload32.png" class="ui-li-icon"/></a></li></ul></div><div id="Footer" style="z-index:998;width:100%;position:fixed;overflow:hidden;margin-top:40px;left:0px;height:40px;color:white;box-shadow:0 0 20px 5px rgba(0, 0, 0, .35);bottom:0px;border:0px;background:-webkit-linear-gradient(left, #61a9f1 0%,#7bbaf9 50%,#7bbaf9 50%,#91c8ff 100%);;" data-role="footer"><a id="settings" data-role="button" data-transition="fade" style="visibility:hidden;margin-top:4px;margin-right:7px;float:right;border:0px;background:#0099FF;"><img id="SettingsIcon" src="neptune/public/application/zdfo_timesheet_entry/css/images/gear-white.png" style="background:transparent;border:0px;"/></a><a id="GoToLogin" data-transition="fade" data-role="button" style="background:#0099FF;border:0px;float:left;margin-left:7px;margin-top:4px;" href="ZDFO_LOGIN.html"><img id="HomeIcon" src="neptune/public/application/zdfo_portal/css/images/icons-png/arrow-l-white.png" style="background:transparent;border:0px;"/></a></div></div>
+
 </body>
 </html>
